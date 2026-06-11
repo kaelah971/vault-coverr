@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VaultCover — Don't Just Chase APY. Cover the Risk.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:         #0A0A0A;
+  --card:       #111111;
+  --card-2:     #161616;
+  --border:     #1E1E1E;
+  --border-2:   #2A2A2A;
+  --gold:       #C9963A;
+  --gold-hi:    #DBA94D;
+  --gold-wash:  rgba(201,150,58,0.10);
+  --gold-faint: rgba(201,150,58,0.04);
+  --white:      #F0EDE8;
+  --muted:      #777777;
+  --dim:        #3E3E3E;
+  --green:      #4ADE80;
+  --amber:      #FB923C;
+  --red:        #F87171;
+}
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Space Grotesk', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { text-decoration:none; color:inherit; }
+
+/* ─────────────────────────────────────────────
+   GLOBAL ATOMS
+───────────────────────────────────────────── */
+.eyebrow {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.rule { width:100%; height:1px; background:var(--border); }
+
+.btn-solid {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--gold); color: #0A0A0A;
+  padding: 14px 28px; border-radius: 6px;
+  font: 600 14px/1 'Space Grotesk', sans-serif;
+  border: 1.5px solid var(--gold); cursor: pointer;
+  transition: background .2s, transform .15s;
+}
+.btn-solid:hover { background: var(--gold-hi); border-color: var(--gold-hi); transform: translateY(-1px); }
+
+.btn-ring {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--gold);
+  padding: 13px 28px; border-radius: 6px;
+  font: 500 14px/1 'Space Grotesk', sans-serif;
+  border: 1.5px solid var(--gold); cursor: pointer;
+  transition: background .2s, transform .15s;
+}
+.btn-ring:hover { background: var(--gold-wash); transform: translateY(-1px); }
+
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--muted);
+  padding: 13px 28px; border-radius: 6px;
+  font: 500 14px/1 'Space Grotesk', sans-serif;
+  border: 1.5px solid var(--border-2); cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+.btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ─────────────────────────────────────────────
+   NAV
+───────────────────────────────────────────── */
+nav {
+  position: fixed; inset: 0 0 auto;
+  z-index: 100;
+  padding: 0 80px;
+  height: 72px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(10,10,10,.92);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font: 800 22px/1 'Syne', sans-serif;
+  letter-spacing: -.01em;
+  color: var(--gold);
+}
+.nav-logo em { font-style:normal; color:var(--white); }
+.nav-links { display:flex; gap:36px; list-style:none; }
+.nav-links a { font-size:14px; color:var(--muted); transition:color .2s; }
+.nav-links a:hover { color:var(--white); }
+.nav-launch {
+  display:flex; align-items:center; gap:8px;
+  font-size:14px; font-weight:500; color:var(--gold);
+  padding:10px 20px; border-radius:6px;
+  border:1.5px solid var(--gold);
+  transition:background .2s;
+}
+.nav-launch:hover { background:var(--gold-wash); }
+
+/* ─────────────────────────────────────────────
+   HERO
+───────────────────────────────────────────── */
+#hero {
+  min-height: 100vh;
+  padding: 160px 80px 100px;
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative;
+}
+#hero::after {
+  content:'';
+  position:absolute; inset:0;
+  background: radial-gradient(ellipse 60% 55% at 72% 52%, rgba(201,150,58,.032) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-eyebrow { margin-bottom:24px; }
+.hero-h1 {
+  font: 800 clamp(64px,8.5vw,112px)/0.94 'Syne', sans-serif;
+  letter-spacing: -.025em;
+  text-transform: uppercase;
+  color: var(--gold);
+  max-width: 860px;
+  margin-bottom: 28px;
+}
+.hero-body {
+  font-size:16px; line-height:1.65; color:var(--muted);
+  max-width: 460px; margin-bottom: 44px;
+}
+.hero-ctas { display:flex; gap:16px; flex-wrap:wrap; align-items:center; }
+.hero-note {
+  display:flex; align-items:center; gap:8px;
+  margin-top:60px; font-size:13px; color:var(--muted);
+}
+
+/* ─────────────────────────────────────────────
+   SECTION SHELL
+───────────────────────────────────────────── */
+.sec {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 120px 80px;
+}
+.sec-hdr { margin-bottom:80px; }
+.sec-hdr .eyebrow { margin-bottom:20px; }
+.sec-hdr h2 {
+  font: 800 clamp(32px,4.5vw,60px)/1.04 'Syne', sans-serif;
+  letter-spacing: -.025em;
+  max-width: 580px;
+}
+.sec-hdr p {
+  margin-top:18px; font-size:15px;
+  line-height:1.7; color:var(--muted); max-width:460px;
+}
+
+/* ─────────────────────────────────────────────
+   SECTION 2 — THE PROTECTION LOOP
+───────────────────────────────────────────── */
+.flow {
+  display: grid;
+  grid-template-columns: repeat(5,1fr);
+  position: relative;
+}
+/* connecting gold line */
+.flow::before {
+  content:'';
+  position:absolute;
+  top:22px; left:calc(10% + 2px); width:calc(80% - 4px);
+  height:1px;
+  background: linear-gradient(90deg, transparent 0%, var(--gold) 12%, var(--gold) 88%, transparent 100%);
+  z-index:0;
+}
+.fstep {
+  display:flex; flex-direction:column; align-items:center; text-align:center;
+  padding:0 18px; position:relative; z-index:1;
+}
+.fnode {
+  width:44px; height:44px; border-radius:50%;
+  background:var(--bg); border:1px solid var(--gold);
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:28px; flex-shrink:0;
+}
+.fnode-dot { width:8px; height:8px; border-radius:50%; background:var(--gold); }
+/* Last step pulses gently */
+.fstep:last-child .fnode { box-shadow:0 0 24px rgba(201,150,58,.22); }
+.fnum {
+  font-size:10px; font-weight:600; letter-spacing:.14em;
+  color:var(--gold); margin-bottom:10px;
+}
+.ftitle {
+  font: 700 15px/1.3 'Syne', sans-serif;
+  color:var(--white); margin-bottom:10px;
+}
+.fdesc { font-size:13px; line-height:1.62; color:var(--muted); }
+
+/* ─────────────────────────────────────────────
+   SECTION 3 — VAULT EXPLORER
+───────────────────────────────────────────── */
+.vault-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  grid-template-rows:auto auto;
+  gap:14px;
+  margin-top:72px;
+}
+.vcard {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:32px;
+  position:relative; overflow:hidden;
+  cursor:default;
+  transition:border-color .25s, background .2s;
+}
+.vcard:hover { border-color:rgba(201,150,58,.38); background:#131313; }
+.vcard::after {
+  content:'';
+  position:absolute; bottom:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  opacity:0; transition:opacity .3s;
+}
+.vcard:hover::after { opacity:1; }
+
+/* Featured card spans full left column */
+.vcard.feat { grid-column:1; grid-row:1/3; padding:40px; }
+.vcard.compact { grid-column:2; padding:28px; }
+
+/* Tags */
+.vtag {
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  padding:5px 10px; border-radius:4px; margin-bottom:20px;
+}
+.vtag-rwa    { background:rgba(201,150,58,.09); color:var(--gold);  border:1px solid rgba(201,150,58,.24); }
+.vtag-stable { background:rgba(74,222,128,.07); color:var(--green); border:1px solid rgba(74,222,128,.2); }
+.vtag-exp    { background:rgba(248,113,113,.07);color:var(--red);   border:1px solid rgba(248,113,113,.2); }
+
+.vname { font:700 22px/1.2 'Syne',sans-serif; color:var(--white); margin-bottom:8px; }
+.vcard.feat .vname { font-size:28px; }
+.vdesc { font-size:14px; line-height:1.65; color:var(--muted); margin-bottom:28px; }
+.vcard.compact .vdesc { font-size:13px; margin-bottom:20px; }
+
+/* Metrics */
+.vmets { display:grid; gap:16px; margin-bottom:28px; }
+.vcard.feat   .vmets { grid-template-columns:repeat(3,1fr); }
+.vcard.compact .vmets { grid-template-columns:repeat(2,1fr); margin-bottom:20px; }
+.mlabel {
+  display:block; font-size:10px; font-weight:600;
+  letter-spacing:.1em; text-transform:uppercase;
+  color:var(--dim); margin-bottom:4px;
+}
+.mval { display:block; font:700 22px/1 'Syne',sans-serif; color:var(--white); }
+.vcard.compact .mval { font-size:18px; }
+.mval.green { color:var(--green); }
+.mval.amber { color:var(--amber); }
+.mval.red   { color:var(--red);   }
+
+/* Risk bar */
+.rbar-row { margin-bottom:28px; }
+.vcard.compact .rbar-row { margin-bottom:20px; }
+.rbar-head {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:8px;
+}
+.rbar-label { font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+.rbar-score { font:700 13px/1 'Syne',sans-serif; }
+.rbar-track { height:4px; background:var(--border-2); border-radius:2px; overflow:hidden; }
+.rbar-fill  { height:100%; border-radius:2px; width:0%; transition:width 1.2s cubic-bezier(.16,1,.3,1); }
+
+/* Trigger pills */
+.tpills { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:28px; }
+.tpill {
+  font-size:12px; padding:4px 10px; border-radius:4px;
+  background:var(--card-2); border:1px solid var(--border-2); color:var(--muted);
+}
+
+/* Card footer */
+.vfoot {
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:12px;
+  padding-top:24px; border-top:1px solid var(--border);
+}
+.cbadge { display:flex; align-items:center; gap:7px; font-size:13px; color:var(--muted); }
+.cdot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.cpremium { font-size:13px; color:var(--muted); }
+.cpremium strong { color:var(--gold); font-weight:600; }
+
+/* ─────────────────────────────────────────────
+   SECTION 4 — AI RISK AGENT
+───────────────────────────────────────────── */
+.agent-wrap {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:80px; align-items:start;
+}
+/* Left */
+.agent-copy .eyebrow { margin-bottom:20px; }
+.agent-copy h2 {
+  font:800 clamp(30px,3.8vw,52px)/1.04 'Syne',sans-serif;
+  letter-spacing:-.025em; margin-bottom:18px;
+}
+.agent-copy > p { font-size:15px; line-height:1.7; color:var(--muted); margin-bottom:40px; }
+
+.caps { border-top:1px solid var(--border); }
+.cap {
+  display:flex; gap:18px; padding:20px 0;
+  border-bottom:1px solid var(--border);
+}
+.cap-icon {
+  width:36px; height:36px; border-radius:6px; flex-shrink:0;
+  background:var(--gold-wash); border:1px solid rgba(201,150,58,.18);
+  display:flex; align-items:center; justify-content:center;
+  font:700 12px/1 'Syne',sans-serif; color:var(--gold);
+}
+.cap h4 { font:700 15px/1.25 'Syne',sans-serif; color:var(--white); margin-bottom:4px; }
+.cap p  { font-size:13px; line-height:1.6; color:var(--muted); }
+
+/* Terminal */
+.term {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:8px; overflow:hidden;
+}
+.term-bar {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:13px 18px;
+  background:var(--card-2); border-bottom:1px solid var(--border);
+}
+.tdots { display:flex; gap:6px; }
+.tdot { width:10px; height:10px; border-radius:50%; }
+.td-r { background:#FF5F57; }
+.td-y { background:#FFBD2E; }
+.td-g { background:#28C840; }
+.tfile { font:400 11px/1 'JetBrains Mono',monospace; color:var(--muted); }
+.tlive { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--green); font-weight:500; }
+.ldot { width:6px; height:6px; border-radius:50%; background:var(--green); animation:blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.2;} }
+
+.term-body {
+  padding:22px; font:400 13px/1.9 'JetBrains Mono',monospace;
+  white-space:pre;
+}
+.jk { color:var(--gold); }
+.js { color:#A8FF78; }
+.jn { color:#79B8FF; }
+.jb { color:#F97583; }
+.jp { color:var(--muted); }
+.jline { display:block; }
+.jline.hit {
+  background:rgba(248,113,113,.06);
+  border-left:2px solid var(--red);
+  margin:0 -22px; padding-left:22px;
+}
+
+.term-signal {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:13px 18px;
+  background:rgba(74,222,128,.05); border-top:1px solid rgba(74,222,128,.12);
+}
+.sig-label { font-size:12px; color:var(--green); }
+.sig-btn {
+  font:600 12px/1 'Space Grotesk',sans-serif;
+  color:var(--green); cursor:pointer;
+  display:flex; align-items:center; gap:4px;
+}
+
+/* Stats below terminal */
+.astats {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:0;
+  margin-top:14px; border:1px solid var(--border); border-radius:8px; overflow:hidden;
+}
+.astat {
+  background:var(--card); padding:18px; text-align:center;
+  border-right:1px solid var(--border);
+}
+.astat:last-child { border-right:none; }
+.astat-n { display:block; font:800 26px/1 'Syne',sans-serif; color:var(--gold); margin-bottom:4px; }
+.astat-l { font-size:12px; color:var(--muted); letter-spacing:.04em; }
+
+/* ─────────────────────────────────────────────
+   CTA SECTION
+───────────────────────────────────────────── */
+.cta-wrap { max-width:1400px; margin:0 auto; padding:0 80px 100px; }
+.cta-box {
+  background:var(--card); border:1px solid var(--border-2);
+  border-radius:10px; padding:72px 80px;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:60px; position:relative; overflow:hidden;
+}
+.cta-box::before {
+  content:''; position:absolute;
+  top:-40%; right:-6%; width:480px; height:480px;
+  background:radial-gradient(ellipse, rgba(201,150,58,.055) 0%, transparent 65%);
+  pointer-events:none;
+}
+.cta-copy { position:relative; z-index:1; }
+.cta-copy h2 {
+  font:800 clamp(28px,3.4vw,52px)/1.04 'Syne',sans-serif;
+  letter-spacing:-.025em; margin-bottom:16px;
+}
+.cta-copy p { font-size:15px; line-height:1.7; color:var(--muted); max-width:460px; }
+.cta-acts {
+  display:flex; flex-direction:column; gap:12px;
+  min-width:244px; position:relative; z-index:1;
+}
+.cta-note {
+  font-size:12px; color:var(--dim);
+  display:flex; align-items:center; justify-content:center; gap:6px;
+}
+.green-dot { width:6px; height:6px; border-radius:50%; background:var(--green); flex-shrink:0; }
+
+/* ─────────────────────────────────────────────
+   FOOTER
+───────────────────────────────────────────── */
+footer {
+  max-width:1400px; margin:0 auto;
+  padding:36px 80px;
+  border-top:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.f-logo { font:800 18px/1 'Syne',sans-serif; color:var(--gold); }
+.f-logo em { font-style:normal; color:var(--muted); }
+.f-links { display:flex; gap:28px; list-style:none; }
+.f-links a { font-size:13px; color:var(--muted); transition:color .2s; }
+.f-links a:hover { color:var(--white); }
+.f-copy { font-size:13px; color:var(--dim); }
+
+/* ─────────────────────────────────────────────
+   SCROLL REVEAL
+───────────────────────────────────────────── */
+.rv { opacity:0; transform:translateY(26px); transition:opacity .65s ease, transform .65s ease; }
+.rv.in { opacity:1; transform:translateY(0); }
+.d1 { transition-delay:.08s; }
+.d2 { transition-delay:.16s; }
+.d3 { transition-delay:.24s; }
+.d4 { transition-delay:.32s; }
+.d5 { transition-delay:.40s; }
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────────── */
+@media(max-width:1100px){
+  nav { padding:0 32px; }
+  .nav-links { display:none; }
+  #hero,.sec,.cta-wrap { padding-left:32px; padding-right:32px; }
+  footer { padding:28px 32px; }
+  .flow { grid-template-columns:repeat(3,1fr); gap:32px; }
+  .flow::before { display:none; }
+  .vault-grid { grid-template-columns:1fr; }
+  .vcard.feat { grid-row:1; grid-column:1; }
+  .vcard.compact { grid-column:1; }
+  .agent-wrap { grid-template-columns:1fr; gap:48px; }
+  .cta-box { flex-direction:column; padding:48px 40px; gap:36px; }
+  .cta-acts .btn-solid,.cta-acts .btn-ghost { justify-content:center; }
+  footer { flex-direction:column; gap:20px; text-align:center; }
+  .f-links { justify-content:center; }
+}
+@media(max-width:640px){
+  #hero { padding:140px 24px 80px; }
+  .sec { padding:80px 24px; }
+  .cta-wrap { padding:0 24px 80px; }
+  footer { padding:24px; }
+  .flow { grid-template-columns:repeat(2,1fr); gap:24px; }
+  .vcard.feat .vmets { grid-template-columns:repeat(2,1fr); }
+  .cta-box { padding:36px 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ──────────────────────────────────── -->
+<nav>
+  <div class="nav-logo">Vault<em>Cover</em></div>
+  <ul class="nav-links">
+    <li><a href="#vault-explorer">Vaults</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#ai-agent">Protection</a></li>
+    <li><a href="#">Docs</a></li>
+    <li><a href="#">About</a></li>
+  </ul>
+  <a href="#" class="nav-launch">Launch App →</a>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────── -->
+<section id="hero">
+  <span class="eyebrow hero-eyebrow">AI-Monitored Parametric Cover for DeFi &amp; RWA Vaults</span>
+  <h1 class="hero-h1">Don't Just Chase APY.<br>Cover the Risk.</h1>
+  <p class="hero-body">Compare vault risk before depositing, purchase protection against predefined danger conditions, and receive AI-generated claim signals when vault health deteriorates.</p>
+  <div class="hero-ctas">
+    <a href="#vault-explorer" class="btn-solid">Explore Vaults →</a>
+    <a href="#" class="btn-ring">View Demo</a>
+  </div>
+  <div class="hero-note">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M7 1.5L2.5 4.2v3.5C2.5 10.5 4.6 13 7 13.5 9.4 13 11.5 10.5 11.5 7.7V4.2L7 1.5Z" stroke="#C9963A" stroke-width="1" fill="none"/>
+    </svg>
+    Built on Casper Testnet
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- ── SECTION 2 · THE PROTECTION LOOP ──────── -->
+<div class="sec" id="how-it-works">
+  <div class="sec-hdr rv">
+    <span class="eyebrow">The Protection Loop</span>
+    <h2>From vault browsing<br>to covered claim signal.</h2>
+    <p>Five steps. Fully on-chain. Every action produces a Casper transaction hash you can verify. Your Cover Receipt is the proof.</p>
+  </div>
+
+  <div class="flow">
+    <div class="fstep rv d1">
+      <div class="fnode"><div class="fnode-dot"></div></div>
+      <span class="fnum">01</span>
+      <p class="ftitle">Browse Vaults</p>
+      <p class="fdesc">Compare APY, TVL, risk score, and cover availability across three Casper demo vaults.</p>
+    </div>
+    <div class="fstep rv d2">
+      <div class="fnode"><div class="fnode-dot"></div></div>
+      <span class="fnum">02</span>
+      <p class="ftitle">Buy Cover</p>
+      <p class="fdesc">Select a vault, set your cover amount, choose risk triggers, and pay the on-chain premium.</p>
+    </div>
+    <div class="fstep rv d3">
+      <div class="fnode"><div class="fnode-dot"></div></div>
+      <span class="fnum">03</span>
+      <p class="ftitle">AI Monitors</p>
+      <p class="fdesc">The AI Risk Agent reads vault health continuously against eight predefined trigger conditions.</p>
+    </div>
+    <div class="fstep rv d4">
+      <div class="fnode"><div class="fnode-dot"></div></div>
+      <span class="fnum">04</span>
+      <p class="ftitle">Trigger Fires</p>
+      <p class="fdesc">TVL drop, APY collapse, depeg, withdrawal spike — when thresholds breach, Casper records the risk event.</p>
+    </div>
+    <div class="fstep rv d5">
+      <div class="fnode" style="box-shadow:0 0 24px rgba(201,150,58,.22)"><div class="fnode-dot"></div></div>
+      <span class="fnum">05</span>
+      <p class="ftitle">Claim Receipt</p>
+      <p class="fdesc">Submit claim, receive a Cover Receipt with policy, payout simulation, and on-chain tx hashes.</p>
+    </div>
+  </div>
+</div>
+
+<div class="rule"></div>
+
+<!-- ── SECTION 3 · VAULT EXPLORER ───────────── -->
+<div class="sec" id="vault-explorer">
+  <div class="sec-hdr rv">
+    <span class="eyebrow">Vault Explorer</span>
+    <h2>Three vaults.<br>Three risk profiles.<br>Zero guesswork.</h2>
+    <p>Every vault shows its parametric risk score, cover availability, and supported triggers — before you deposit a single CSPR.</p>
+  </div>
+
+  <div class="vault-grid">
+
+    <!-- Featured: RWA Invoice Vault -->
+    <div class="vcard feat rv">
+      <span class="vtag vtag-rwa">⬡ RWA · Featured</span>
+      <div class="vname">RWA Invoice Vault</div>
+      <p class="vdesc">Invoice-backed real-world asset yield. Cover available against payment delay, oracle failure, TVL drain, and strategy deviation. The highest demonstration scenario coverage for the AI Risk Agent.</p>
+
+      <div class="vmets">
+        <div>
+          <span class="mlabel">APY</span>
+          <span class="mval amber">8.4%</span>
+        </div>
+        <div>
+          <span class="mlabel">TVL</span>
+          <span class="mval">$2.1M</span>
+        </div>
+        <div>
+          <span class="mlabel">Active Policies</span>
+          <span class="mval">34</span>
+        </div>
+      </div>
+
+      <div class="rbar-row">
+        <div class="rbar-head">
+          <span class="rbar-label">Risk Score</span>
+          <span class="rbar-score" style="color:var(--amber)">47 / 100 · Medium</span>
+        </div>
+        <div class="rbar-track">
+          <div class="rbar-fill" data-w="47" style="background:var(--amber)"></div>
+        </div>
+      </div>
+
+      <div class="tpills">
+        <span class="tpill">TVL Drop</span>
+        <span class="tpill">RWA Payment Delay</span>
+        <span class="tpill">Oracle Failure</span>
+        <span class="tpill">Strategy Deviation</span>
+      </div>
+
+      <div class="vfoot">
+        <div class="cbadge">
+          <div class="cdot" style="background:var(--green)"></div>
+          Cover Available
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <span class="cpremium">Est. <strong>0.48 CSPR / week</strong></span>
+          <a href="#" class="btn-solid" style="padding:11px 20px;font-size:13px">Cover This Vault →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Compact: Stable Yield -->
+    <div class="vcard compact rv d1">
+      <span class="vtag vtag-stable">✦ Stable DeFi</span>
+      <div class="vname">Stable Yield Vault</div>
+      <p class="vdesc">Low-risk vault with consistent APY and deep TVL. Minimal trigger sensitivity — ideal for conservative on-chain depositors seeking parametric downside cover.</p>
+
+      <div class="vmets">
+        <div>
+          <span class="mlabel">APY</span>
+          <span class="mval green">5.2%</span>
+        </div>
+        <div>
+          <span class="mlabel">TVL</span>
+          <span class="mval">$4.7M</span>
+        </div>
+      </div>
+
+      <div class="rbar-row">
+        <div class="rbar-head">
+          <span class="rbar-label">Risk Score</span>
+          <span class="rbar-score" style="color:var(--green)">18 / 100 · Low</span>
+        </div>
+        <div class="rbar-track">
+          <div class="rbar-fill" data-w="18" style="background:var(--green)"></div>
+        </div>
+      </div>
+
+      <div class="vfoot">
+        <div class="cbadge">
+          <div class="cdot" style="background:var(--green)"></div>
+          Cover Available
+        </div>
+        <a href="#" class="btn-ring" style="padding:10px 18px;font-size:13px">View Vault →</a>
+      </div>
+    </div>
+
+    <!-- Compact: Experimental -->
+    <div class="vcard compact rv d2" style="border-color:rgba(248,113,113,.2)">
+      <span class="vtag vtag-exp">⚠ Experimental</span>
+      <div class="vname">High APY Experimental</div>
+      <p class="vdesc">High-risk vault designed to demonstrate live trigger events and APY volatility in real time. Trigger is currently active on Casper Testnet.</p>
+
+      <div class="vmets">
+        <div>
+          <span class="mlabel">APY</span>
+          <span class="mval red">38.7%</span>
+        </div>
+        <div>
+          <span class="mlabel">TVL</span>
+          <span class="mval">$0.8M</span>
+        </div>
+      </div>
+
+      <div class="rbar-row">
+        <div class="rbar-head">
+          <span class="rbar-label">Risk Score</span>
+          <span class="rbar-score" style="color:var(--red)">83 / 100 · High</span>
+        </div>
+        <div class="rbar-track">
+          <div class="rbar-fill" data-w="83" style="background:var(--red)"></div>
+        </div>
+      </div>
+
+      <div class="vfoot">
+        <div class="cbadge">
+          <div class="cdot" style="background:var(--red);animation:blink 1.5s infinite"></div>
+          <span style="color:var(--red)">Trigger Active</span>
+        </div>
+        <a href="#" class="btn-ring" style="padding:10px 18px;font-size:13px;border-color:var(--red);color:var(--red)">View Signal →</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="rule"></div>
+
+<!-- ── SECTION 4 · AI RISK AGENT ─────────────── -->
+<div class="sec" id="ai-agent">
+  <div class="agent-wrap">
+
+    <!-- Left: capabilities -->
+    <div class="agent-copy rv">
+      <span class="eyebrow">The AI Risk Agent</span>
+      <h2>Reads the vault.<br>Not just the APY.</h2>
+      <p>While you're looking at yield numbers, the VaultCover Agent is reading liquidity patterns, withdrawal velocity, and strategy deviations your dashboard won't show until it's too late.</p>
+
+      <div class="caps">
+        <div class="cap">
+          <div class="cap-icon">01</div>
+          <div>
+            <h4>Continuous health scoring</h4>
+            <p>Reads vault metrics and updates a 0–100 risk score against eight predefined trigger rules in real time.</p>
+          </div>
+        </div>
+        <div class="cap">
+          <div class="cap-icon">02</div>
+          <div>
+            <h4>Plain-language trigger explanations</h4>
+            <p>When a danger condition fires, the agent explains exactly what happened and why — not just a number on a dial.</p>
+          </div>
+        </div>
+        <div class="cap">
+          <div class="cap-icon">03</div>
+          <div>
+            <h4>Hashable, verifiable claim signals</h4>
+            <p>Generates structured JSON risk reports with evidence hash, confidence score, and recommended action.</p>
+          </div>
+        </div>
+        <div class="cap">
+          <div class="cap-icon">04</div>
+          <div>
+            <h4>Permanent on-chain evidence</h4>
+            <p>Every risk event and claim signal is recorded to Casper Testnet with a transaction hash that never expires.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Terminal card -->
+    <div class="rv d2">
+      <div class="term">
+        <div class="term-bar">
+          <div class="tdots">
+            <div class="tdot td-r"></div>
+            <div class="tdot td-y"></div>
+            <div class="tdot td-g"></div>
+          </div>
+          <span class="tfile">risk_agent_output.json</span>
+          <div class="tlive"><div class="ldot"></div> Live Signal</div>
+        </div>
+
+        <div class="term-body"><span class="jline"><span class="jp">{</span></span>
+<span class="jline">  <span class="jk">"vault_id"</span><span class="jp">: </span><span class="js">"rwa-invoice-vault"</span><span class="jp">,</span></span>
+<span class="jline">  <span class="jk">"risk_score"</span><span class="jp">: </span><span class="jn">84</span><span class="jp">,</span></span>
+<span class="jline hit">  <span class="jk">"triggered"</span><span class="jp">: </span><span class="jb">true</span><span class="jp">,</span></span>
+<span class="jline hit">  <span class="jk">"trigger_type"</span><span class="jp">: </span><span class="js">"TVL_DROP"</span><span class="jp">,</span></span>
+<span class="jline">  <span class="jk">"confidence"</span><span class="jp">: </span><span class="jn">91</span><span class="jp">,</span></span>
+<span class="jline">  <span class="jk">"summary"</span><span class="jp">: </span><span class="js">"Vault liquidity fell 45%</span></span>
+<span class="jline">    <span class="js">in 6h. TVL_DROP breached."</span><span class="jp">,</span></span>
+<span class="jline">  <span class="jk">"recommended_action"</span><span class="jp">: </span><span class="js">"Submit claim signal"</span><span class="jp">,</span></span>
+<span class="jline">  <span class="jk">"risk_report_hash"</span><span class="jp">: </span><span class="js">"0xd4f8...3a91"</span></span>
+<span class="jline"><span class="jp">}</span></span></div>
+
+        <div class="term-signal">
+          <span class="sig-label">⬡ Claim signal generated · Casper event recorded</span>
+          <span class="sig-btn">Submit Claim →</span>
+        </div>
+      </div>
+
+      <div class="astats">
+        <div class="astat">
+          <span class="astat-n">8</span>
+          <span class="astat-l">Risk Triggers</span>
+        </div>
+        <div class="astat">
+          <span class="astat-n">91%</span>
+          <span class="astat-l">Signal Confidence</span>
+        </div>
+        <div class="astat">
+          <span class="astat-n">5+</span>
+          <span class="astat-l">On-chain Txns</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── CTA ───────────────────────────────────── -->
+<div class="cta-wrap">
+  <div class="cta-box rv">
+    <div class="cta-copy">
+      <h2>Stop depositing blind.<br>Cover the vault.</h2>
+      <p>VaultCover Agent is live on Casper Testnet. Browse three demo vaults, buy a cover policy, and receive your first AI-generated claim signal — all on-chain, all verifiable.</p>
+    </div>
+    <div class="cta-acts">
+      <a href="#" class="btn-solid">Explore Demo Vaults →</a>
+      <a href="#" class="btn-ghost">Read the Docs</a>
+      <p class="cta-note">
+        <span class="green-dot"></span>
+        Live on Casper Testnet · No mainnet funds required
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ────────────────────────────────── -->
+<footer>
+  <div class="f-logo">Vault<em>Cover</em></div>
+  <ul class="f-links">
+    <li><a href="#">Docs</a></li>
+    <li><a href="#">Casper Network</a></li>
+    <li><a href="#">GitHub</a></li>
+    <li><a href="#">Twitter/X</a></li>
+  </ul>
+  <p class="f-copy">© 2026 VaultCover. Parametric cover prototype. Not regulated insurance.</p>
+</footer>
+
+<script>
+/* ── Scroll reveal ── */
+const rv = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold:.08, rootMargin:'0px 0px -40px 0px' });
+document.querySelectorAll('.rv').forEach(el => rv.observe(el));
+
+/* ── Risk bar animation ── */
+const barObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      const fill = e.target;
+      const w = fill.getAttribute('data-w') + '%';
+      setTimeout(() => { fill.style.width = w; }, 200);
+      barObs.unobserve(fill);
+    }
+  });
+}, { threshold:.2 });
+document.querySelectorAll('.rbar-fill').forEach(el => barObs.observe(el));
+</script>
+</body>
+</html>
