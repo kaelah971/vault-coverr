@@ -6,6 +6,7 @@ import Link from "next/link";
 import { getPoliciesSnapshot, subscribePolicies, resetDemoState } from "@/lib/demo-state";
 import { SectionHeader } from "@/components/SectionHeader";
 import { PolicyCard } from "@/components/PolicyCard";
+import { DemoModeBadge } from "@/components/DemoModeBadge";
 
 const EMPTY_POLICIES: never[] = [];
 
@@ -32,11 +33,16 @@ export default function PoliciesPage() {
   return (
     <div className="px-5 py-20 sm:px-8 lg:px-14">
       <div className="mx-auto max-w-[1280px]">
-        <SectionHeader
-          eyebrow="Your Protection"
-          title="Cover Policies"
-          body="Active parametric cover policies with AI-monitored trigger detection."
-        />
+        <div className="flex flex-wrap items-center gap-4">
+          <SectionHeader
+            eyebrow="Your Protection"
+            title="Cover Policies"
+            body="Active parametric cover policies with AI-monitored trigger detection."
+          />
+          <div className="shrink-0 self-start pt-2">
+            <DemoModeBadge />
+          </div>
+        </div>
 
         {policies.length === 0 ? (
           <div className="overflow-hidden rounded-2xl border border-border-default bg-surface p-12 text-center">

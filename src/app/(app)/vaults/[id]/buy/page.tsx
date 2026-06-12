@@ -8,6 +8,8 @@ import { savePolicy } from "@/lib/demo-state";
 import type { Policy } from "@/lib/types";
 import { Metric } from "@/components/Metric";
 import { RiskScoreBar } from "@/components/RiskScoreBar";
+import { DemoModeBadge } from "@/components/DemoModeBadge";
+import { OnchainPendingBadge } from "@/components/OnchainPendingBadge";
 
 const COVER_AMOUNTS = [
   { label: "$1K", value: 1_000 },
@@ -147,9 +149,13 @@ export default function BuyCoverPage({
         Back to {vault.name}
       </Link>
 
-      <h1 className="font-display text-3xl font-bold text-gold lg:text-4xl">
-        Buy Cover
-      </h1>
+      <div className="flex flex-wrap items-center gap-3">
+        <h1 className="font-display text-3xl font-bold text-gold lg:text-4xl">
+          Buy Cover
+        </h1>
+        <DemoModeBadge />
+        <OnchainPendingBadge />
+      </div>
       <p className="mt-3 max-w-xl leading-7 text-text-secondary">
         Select your cover amount and triggers to purchase parametric protection
         for the {vault.name}.

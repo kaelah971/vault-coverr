@@ -4,6 +4,7 @@ import { getVaultById } from "@/lib/mock-data";
 import { RiskScoreBar } from "@/components/RiskScoreBar";
 import { TriggerBadge } from "@/components/TriggerBadge";
 import { Metric } from "@/components/Metric";
+import { DemoModeBadge } from "@/components/DemoModeBadge";
 
 type Params = Promise<{ id: string }>;
 
@@ -19,31 +20,37 @@ export default async function VaultDetailPage({
     notFound();
   }
 
+  const riskExplanation = getRiskExplanation(vault.id);
+  const protectionDetails = getProtectionDetails(vault.id);
+  const triggerConsequence = getTriggerConsequence(vault.id);
+
   return (
     <div className="mx-auto max-w-[1280px]">
-      {/* Back link */}
-      <Link
-        href="/vaults"
-        className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-text-secondary transition hover:text-gold"
-      >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
+      <div className="flex items-center justify-between">
+        <Link
+          href="/vaults"
+          className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-text-secondary transition hover:text-gold"
         >
-          <path
-            d="M10 12L6 8L10 4"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-        Back to Vaults
-      </Link>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              d="M10 12L6 8L10 4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          Back to Vaults
+        </Link>
+        <DemoModeBadge />
+      </div>
 
       {/* Header */}
       <span className="mb-4 inline-flex rounded-[4px] border border-[rgba(230,192,138,0.24)] bg-[rgba(230,192,138,0.08)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-gold">
@@ -97,6 +104,49 @@ export default async function VaultDetailPage({
                 </li>
               ))}
             </ul>
+          </div>
+
+          {/* Why this vault has risk */}
+          <div className="rounded-xl border border-border-subtle bg-surface p-6">
+            <h2 className="mb-3 font-display text-lg font-bold text-text-primary">
+              Why this vault has risk
+            </h2>
+            <p className="leading-7 text-text-secondary">{riskExplanation}</p>
+          </div>
+
+          {/* What this cover protects against */}
+          <div className="rounded-xl border border-border-subtle bg-surface p-6">
+            <h2 className="mb-3 font-display text-lg font-bold text-text-primary">
+              What this cover protects against
+            </h2>
+            <p className="leading-7 text-text-secondary">{protectionDetails}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {vault.triggers.map((trigger) => (
+                <TriggerBadge key={trigger} label={trigger} />
+              ))}
+            </div>
+          </div>
+
+          {/* What happens if a trigger fires */}
+          <div className="rounded-xl border border-border-subtle bg-surface p-6">
+            <h2 className="mb-3 font-display text-lg font-bold text-text-primary">
+              What happens if a trigger fires
+            </h2>
+            <p className="leading-7 text-text-secondary">
+              {triggerConsequence}
+            </p>
+          </div>
+
+          {/* Payout simulation disclaimer */}
+          <div className="rounded-xl border border-border-default bg-deep p-6">
+            <h2 className="mb-3 font-display text-lg font-bold text-gold">
+              Payout simulation disclaimer
+            </h2>
+            <p className="leading-7 text-text-secondary">
+              If a covered trigger is breached, VaultCover generates a claim
+              signal and records the event on Casper. The MVP uses payout
+              simulation only and does not provide guaranteed payouts.
+            </p>
           </div>
         </div>
 
@@ -258,4 +308,45 @@ export default async function VaultDetailPage({
       </div>
     </div>
   );
+}
+
+/* ── Vault-specific risk copy ── */
+
+function getRiskExplanation(vaultId: string): string {
+  switch (vaultId) {
+    case "stable-yield-vault":
+      return "Even conservative yield vaults carry TVL concentration risk and APY erosion from protocol changes or market rate compression. This vault is lower risk, but not risk-free.";
+    case "rwa-invoice-vault":
+      return "Real-world asset vaults face invoice payment delays, oracle data failures, TVL concentration, and automated strategy deviations. The RWA layer introduces off-chain dependency risk.";
+    case "high-apy-experimental":
+      return "Experimental vaults target high yields using leveraged strategies with rapid rotation. This creates APY volatility, sudden withdrawal spikes, and elevated risk score breaches.";
+    default:
+      return "Every vault carries measurable risk from market conditions, protocol mechanics, and user behavior. Parametric cover provides protection against specific triggerable events.";
+  }
+}
+
+function getProtectionDetails(vaultId: string): string {
+  switch (vaultId) {
+    case "stable-yield-vault":
+      return "This cover protects against TVL drops that signal a liquidity crisis and APY collapse below sustainable thresholds. If either trigger fires, a claim signal is generated.";
+    case "rwa-invoice-vault":
+      return "This cover protects against TVL drain, RWA invoice payment delays, oracle feed failures, and strategy deviations outside defined parameters. Multiple trigger types provide comprehensive parametric coverage.";
+    case "high-apy-experimental":
+      return "This cover protects against APY collapse, sudden TVL drops, unexpected withdrawal spikes, and risk score breaches. Designed for users who want parametric cover on high-yield strategies.";
+    default:
+      return "Parametric cover protects against specific measurable risk triggers tracked by the AI Risk Agent. Each trigger has a defined threshold — when breached, a claim signal is generated.";
+  }
+}
+
+function getTriggerConsequence(vaultId: string): string {
+  switch (vaultId) {
+    case "stable-yield-vault":
+      return "The AI Risk Agent continuously monitors vault health. If APY collapses below threshold or TVL drops significantly, a claim signal is generated with a confidence score. The event is recorded on Casper along with a cover receipt containing a payout simulation.";
+    case "rwa-invoice-vault":
+      return "When any covered trigger fires — TVL drop, payment delay, oracle failure, or strategy deviation — the AI Risk Agent detects the breach and generates a claim signal. The event, including risk report hash and confidence metrics, is recorded on Casper for full auditability.";
+    case "high-apy-experimental":
+      return "Given the volatile nature of this vault, triggers can fire rapidly. The AI Risk Agent monitors APY, TVL, withdrawal activity, and composite risk scores. When a breach occurs, a claim signal is generated and the parametric cover response is recorded on-chain.";
+    default:
+      return "If a covered trigger is breached, VaultCover generates a claim signal and records the event on Casper. The MVP uses payout simulation only and does not provide guaranteed payouts.";
+  }
 }

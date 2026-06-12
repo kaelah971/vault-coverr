@@ -7,6 +7,7 @@ import { getClaimSignalSnapshot, subscribeClaimSignal, saveClaimSignal } from "@
 import type { ClaimSignal } from "@/lib/types";
 import { SectionHeader } from "@/components/SectionHeader";
 import { AgentSignalCard } from "@/components/AgentSignalCard";
+import { DemoModeBadge } from "@/components/DemoModeBadge";
 
 export default function RiskPage() {
   const storedSignal = useSyncExternalStore(
@@ -46,11 +47,16 @@ export default function RiskPage() {
   return (
     <div className="px-5 py-20 sm:px-8 lg:px-14">
       <div className="mx-auto max-w-[1280px]">
-        <SectionHeader
-          eyebrow="AI Risk Monitor"
-          title="Vault Health Dashboard"
-          body="Monitor vault risk scores, active triggers, and agent-generated claim signals."
-        />
+        <div className="flex flex-wrap items-center gap-4">
+          <SectionHeader
+            eyebrow="AI Risk Monitor"
+            title="Vault Health Dashboard"
+            body="Monitor vault risk scores, active triggers, and agent-generated claim signals."
+          />
+          <div className="shrink-0 self-start pt-2">
+            <DemoModeBadge />
+          </div>
+        </div>
 
         {/* Mini Vault Health Cards */}
         <div className="mb-12 grid gap-4 sm:grid-cols-3">

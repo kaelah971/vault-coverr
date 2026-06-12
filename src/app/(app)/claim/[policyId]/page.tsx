@@ -9,6 +9,8 @@ import type { Policy } from "@/lib/types";
 import { AgentSignalCard } from "@/components/AgentSignalCard";
 import { SectionHeader } from "@/components/SectionHeader";
 import { TriggerBadge } from "@/components/TriggerBadge";
+import { DemoModeBadge } from "@/components/DemoModeBadge";
+import { OnchainPendingBadge } from "@/components/OnchainPendingBadge";
 
 export default function ClaimPage({
   params,
@@ -93,11 +95,17 @@ export default function ClaimPage({
           </div>
         ) : (
           <>
-            <SectionHeader
-              eyebrow="Claim Submission"
-              title="Submit Claim Signal"
-              body="Review the AI Risk Agent's claim signal and submit your parametric cover claim."
-            />
+            <div className="flex flex-wrap items-center gap-4">
+              <SectionHeader
+                eyebrow="Claim Submission"
+                title="Submit Claim Signal"
+                body="Review the AI Risk Agent's claim signal and submit your parametric cover claim."
+              />
+              <div className="flex shrink-0 flex-wrap gap-2 self-start pt-2">
+                <DemoModeBadge />
+                <OnchainPendingBadge />
+              </div>
+            </div>
 
             <div className="grid gap-8 lg:grid-cols-[1fr_400px]">
               {/* Claim Signal */}

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getReceiptByPolicyIdSnapshot, subscribeReceipts } from "@/lib/demo-state";
 import type { CoverReceipt } from "@/lib/types";
 import { TxHashRow } from "@/components/TxHashRow";
+import { DemoModeBadge } from "@/components/DemoModeBadge";
 
 function truncateHash(hash: string): string {
   if (hash.length <= 20) return hash;
@@ -59,6 +60,9 @@ export default function ReceiptPage({
       <div className="mx-auto max-w-[720px]">
         {/* Header */}
         <div className="text-center">
+          <div className="mb-4 flex items-center justify-center">
+            <DemoModeBadge />
+          </div>
           <h1 className="font-display text-4xl font-bold uppercase leading-none text-gold lg:text-5xl">
             Cover Receipt
           </h1>
@@ -72,9 +76,9 @@ export default function ReceiptPage({
             <span className="font-mono text-xs text-text-muted">
               parametric_cover_receipt.json
             </span>
-            <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] text-safe">
-              <span className="h-2 w-2 rounded-full bg-safe" />
-              Verified
+            <span className="inline-flex items-center gap-2 rounded-[4px] border border-[rgba(166,172,205,0.3)] bg-[rgba(166,172,205,0.08)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#A6ACCD]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#A6ACCD]" />
+              Demo Receipt
             </span>
           </div>
 
@@ -146,6 +150,11 @@ export default function ReceiptPage({
                   ({receipt.payoutPercentage}% of cover)
                 </span>
               </div>
+              <p className="mt-3 text-xs leading-5 text-text-muted">
+                This is a simulated payout amount. Parametric cover receipts use
+                payout simulation in the MVP and do not represent guaranteed
+                payouts.
+              </p>
             </div>
 
             {/* Risk Report Hash */}
@@ -161,9 +170,14 @@ export default function ReceiptPage({
 
           {/* Transactions */}
           <div className="border-t border-border-subtle px-6 pb-6 pt-5 lg:px-8">
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-text-muted">
-              Casper Testnet Transactions
-            </h3>
+            <div className="mb-3 flex items-center justify-between">
+              <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-text-muted">
+                Casper Testnet Transactions
+              </h3>
+              <span className="rounded-[4px] border border-[rgba(166,172,205,0.2)] bg-[rgba(166,172,205,0.04)] px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.08em] text-[#A6ACCD]">
+                Demo Hashes
+              </span>
+            </div>
             <div className="divide-y divide-border-subtle">
               {receipt.transactions.map((tx) => (
                 <TxHashRow key={tx.id} tx={tx} />
@@ -178,6 +192,15 @@ export default function ReceiptPage({
               <span className="font-mono">{formatDate(receipt.createdAt)}</span>
             </div>
           </div>
+        </div>
+
+        {/* Casper deployment disclaimer */}
+        <div className="mt-8 rounded-2xl border border-border-default bg-deep p-6 text-center">
+          <p className="text-sm leading-6 text-text-secondary">
+            Verified Casper Receipt will appear here after contract deployment
+            is connected. The receipt above uses demo transaction hashes and
+            simulated payouts for prototype demonstration.
+          </p>
         </div>
 
         {/* Back Link */}

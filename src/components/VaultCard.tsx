@@ -32,10 +32,15 @@ export function VaultCard({ vault, href }: VaultCardProps) {
         <RiskScoreBar score={vault.riskScore} label={vault.riskLabel} />
       </div>
 
-      <div className="mt-7 flex flex-wrap gap-2">
-        {vault.triggers.map((trigger) => (
-          <TriggerBadge key={trigger} label={trigger} />
-        ))}
+      <div className="mt-7">
+        <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.08em] text-text-muted">
+          Protected Against
+        </span>
+        <div className="flex flex-wrap gap-2">
+          {vault.triggers.map((trigger) => (
+            <TriggerBadge key={trigger} label={trigger} />
+          ))}
+        </div>
       </div>
 
       <div className="mt-7 flex items-center justify-between border-t border-border-subtle pt-5 text-sm text-text-secondary">
