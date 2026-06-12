@@ -10,6 +10,8 @@ import { Metric } from "@/components/Metric";
 import { RiskScoreBar } from "@/components/RiskScoreBar";
 import { DemoModeBadge } from "@/components/DemoModeBadge";
 import { OnchainPendingBadge } from "@/components/OnchainPendingBadge";
+import { useWallet } from "@/components/WalletProvider";
+import { formatAddress } from "@/lib/casper-wallet";
 
 const COVER_AMOUNTS = [
   { label: "$1K", value: 1_000 },
@@ -26,9 +28,14 @@ function createPolicyPayload(
   vault: (typeof VAULTS)[number],
   coverAmount: number,
   premium: number,
-  selectedTriggers: string[]
+  selectedTriggers: string[],
+  wallet?: { address: string | null }
 ): Policy {
   const now = Date.now();
+  const ownerPublicKey = wallet?.address ?? undefined;
+  const ownerShortAddress = ownerPublicKey
+    ? formatAddress(ownerPublicKey)
+    : undefined;
   return {
     id: generatePolicyId(),
     vaultId: vault.id,
@@ -42,6 +49,11 @@ function createPolicyPayload(
     selectedTriggers,
     createdAt: now,
     txHash: generateTxHash(),
+    ownerPublicKey,
+    ownerShortAddress,
+    network: "Casper Testnet",
+    signedByWallet: !!ownerPublicKey,
+    mode: "Demo Mode",
   };
 }
 
@@ -52,6 +64,7 @@ export default function BuyCoverPage({
 }) {
   const { id } = use(params);
   const router = useRouter();
+  const { address, isConnected, connect } = useWallet();
 
   const vault = VAULTS.find((v) => v.id === id);
 
@@ -109,14 +122,15 @@ export default function BuyCoverPage({
   };
 
   const handleSubmit = () => {
-    if (selectedTriggers.length === 0) return;
+    if (selectedTriggers.length === 0 || !isConnected) return;
     setSubmitting(true);
 
     const policy = createPolicyPayload(
       vault,
       coverAmount,
       premium,
-      selectedTriggers
+      selectedTriggers,
+      { address }
     );
 
     savePolicy(policy);
@@ -282,14 +296,36 @@ export default function BuyCoverPage({
             </div>
 
             {/* Submit */}
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={submitting || selectedTriggers.length === 0}
-              className="mt-8 flex w-full items-center justify-center gap-2 rounded-[6px] border border-white/10 bg-gold px-6 py-3.5 text-center font-semibold text-obsidian transition hover:-translate-y-0.5 hover:bg-[#F0CCA0] hover:shadow-[0_0_24px_rgba(230,192,138,0.16)] disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {submitting ? "Processing..." : "Buy Cover \u2192"}
-            </button>
+            {isConnected ? (
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={submitting || selectedTriggers.length === 0}
+                className="mt-8 flex w-full items-center justify-center gap-2 rounded-[6px] border border-white/10 bg-gold px-6 py-3.5 text-center font-semibold text-obsidian transition hover:-translate-y-0.5 hover:bg-[#F0CCA0] hover:shadow-[0_0_24px_rgba(230,192,138,0.16)] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {submitting ? "Processing..." : "Buy Cover \u2192"}
+              </button>
+            ) : (
+              <div className="mt-8 space-y-3">
+                <button
+                  type="button"
+                  disabled
+                  className="flex w-full items-center justify-center gap-2 rounded-[6px] border border-border-divider bg-raised px-6 py-3.5 text-center font-semibold text-text-muted cursor-not-allowed"
+                >
+                  Buy Cover &rarr;
+                </button>
+                <p className="text-center text-xs leading-5 text-text-muted">
+                  Connect Casper Wallet to create a cover policy.
+                </p>
+                <button
+                  type="button"
+                  onClick={connect}
+                  className="flex w-full items-center justify-center gap-2 rounded-[6px] border border-[rgba(230,192,138,0.55)] bg-gold px-5 py-2.5 text-sm font-semibold text-obsidian transition hover:bg-[#F0CCA0] hover:shadow-[0_0_24px_rgba(230,192,138,0.16)]"
+                >
+                  Connect Wallet
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

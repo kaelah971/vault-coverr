@@ -31,9 +31,11 @@ function formatDate(timestamp: number): string {
 
 export function PolicyCard({ policy, onClaim }: PolicyCardProps) {
   const st = statusStyles[policy.status];
+  const isWalletLinked = policy.signedByWallet === true || !!policy.ownerPublicKey;
 
   return (
     <article className="rounded-2xl border border-border-default bg-surface p-6 transition hover:-translate-y-0.5 hover:border-[rgba(230,192,138,0.38)]">
+      {/* Header: vault name + status + wallet badge */}
       <div className="flex items-start justify-between gap-4">
         <div>
           <h3 className="font-display text-xl font-bold text-text-primary">
@@ -41,13 +43,25 @@ export function PolicyCard({ policy, onClaim }: PolicyCardProps) {
           </h3>
           <p className="mt-1 font-mono text-xs text-text-muted">{policy.id}</p>
         </div>
-        <span
-          className={`inline-flex rounded-[4px] border px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] ${st.className}`}
-        >
-          {st.label}
-        </span>
+        <div className="flex shrink-0 flex-col items-end gap-2">
+          <span
+            className={`inline-flex rounded-[4px] border px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] ${st.className}`}
+          >
+            {st.label}
+          </span>
+          {isWalletLinked ? (
+            <span className="inline-flex rounded-[4px] border border-[rgba(230,192,138,0.24)] bg-[rgba(230,192,138,0.06)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-gold">
+              Wallet-linked demo policy
+            </span>
+          ) : (
+            <span className="inline-flex rounded-[4px] border border-[rgba(166,172,205,0.3)] bg-[rgba(166,172,205,0.06)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-[#A6ACCD]">
+              Legacy demo policy
+            </span>
+          )}
+        </div>
       </div>
 
+      {/* Metrics */}
       <div className="mt-6 grid grid-cols-2 gap-4">
         <div>
           <span className="block text-xs font-semibold uppercase tracking-[0.08em] text-text-muted">
@@ -76,13 +90,50 @@ export function PolicyCard({ policy, onClaim }: PolicyCardProps) {
         </span>
       </div>
 
+      {/* Triggers */}
       <div className="mt-4 flex flex-wrap gap-2">
         {policy.selectedTriggers.map((trigger) => (
           <TriggerBadge key={trigger} label={trigger} />
         ))}
       </div>
 
-      <div className="mt-6 border-t border-border-subtle pt-4">
+      {/* Wallet Identity Section */}
+      <div className="mt-5 rounded-[6px] border border-border-subtle bg-deep px-4 py-3">
+        <span className="block text-[10px] font-semibold uppercase tracking-[0.08em] text-text-muted">
+          Wallet Identity
+        </span>
+        <div className="mt-2 space-y-1">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-text-muted">Owner wallet</span>
+            <span className="font-mono text-text-secondary">
+              {isWalletLinked
+                ? policy.ownerShortAddress
+                : "No wallet owner recorded"}
+            </span>
+          </div>
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-text-muted">Network</span>
+            <span className="text-text-secondary">
+              {policy.network ?? "Casper Testnet"}
+            </span>
+          </div>
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-text-muted">Mode</span>
+            <span className="text-text-secondary">
+              {policy.mode ?? "Demo Mode"}
+            </span>
+          </div>
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-text-muted">Wallet-linked</span>
+            <span className={isWalletLinked ? "text-safe" : "text-text-muted"}>
+              {isWalletLinked ? "Yes" : "No"}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer: TX + actions */}
+      <div className="mt-5 border-t border-border-subtle pt-4">
         <div className="flex items-center justify-between">
           <span className="font-mono text-xs text-text-muted">
             TX: {policy.txHash.slice(0, 10)}...

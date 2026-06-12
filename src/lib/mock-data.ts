@@ -153,5 +153,10 @@ export function generateReceipt(policy: Policy, claimSignal: ClaimSignal): Cover
       },
     ],
     createdAt: Date.now(),
+    ownerPublicKey: policy.ownerPublicKey,
+    ownerShortAddress: policy.ownerShortAddress,
+    network: policy.network ?? "Casper Testnet",
+    mode: policy.mode ?? "Demo Mode",
+    walletLinked: policy.signedByWallet ?? false,
   };
 }

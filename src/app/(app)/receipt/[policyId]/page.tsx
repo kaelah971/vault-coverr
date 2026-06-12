@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore, use } from "react";
+import { useSyncExternalStore, use, useState } from "react";
 import Link from "next/link";
 import { getReceiptByPolicyIdSnapshot, subscribeReceipts } from "@/lib/demo-state";
 import type { CoverReceipt } from "@/lib/types";
@@ -36,6 +36,22 @@ export default function ReceiptPage({
     () => undefined as CoverReceipt | undefined
   );
 
+  const [copiedJson, setCopiedJson] = useState(false);
+
+  const isWalletLinked =
+    receipt?.walletLinked === true || !!receipt?.ownerPublicKey;
+
+  const handleCopyJson = async () => {
+    if (!receipt) return;
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(receipt, null, 2));
+      setCopiedJson(true);
+      setTimeout(() => setCopiedJson(false), 2000);
+    } catch {
+      // Clipboard not available
+    }
+  };
+
   if (!receipt) {
     return (
       <div className="flex min-h-[70vh] flex-col items-center justify-center px-5 text-center">
@@ -60,8 +76,19 @@ export default function ReceiptPage({
       <div className="mx-auto max-w-[720px]">
         {/* Header */}
         <div className="text-center">
-          <div className="mb-4 flex items-center justify-center">
+          <div className="mb-4 flex flex-wrap items-center justify-center gap-2">
             <DemoModeBadge />
+            {isWalletLinked ? (
+              <span className="inline-flex items-center gap-1.5 rounded-[4px] border border-[rgba(230,192,138,0.24)] bg-[rgba(230,192,138,0.06)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-gold">
+                <span className="h-1.5 w-1.5 rounded-full bg-gold" />
+                Wallet-linked demo receipt
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 rounded-[4px] border border-[rgba(166,172,205,0.3)] bg-[rgba(166,172,205,0.06)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em] text-[#A6ACCD]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#A6ACCD]" />
+                Legacy demo receipt
+              </span>
+            )}
           </div>
           <h1 className="font-display text-4xl font-bold uppercase leading-none text-gold lg:text-5xl">
             Cover Receipt
@@ -104,6 +131,43 @@ export default function ReceiptPage({
                 <span className="block font-mono text-xs text-text-muted">
                   {receipt.vaultId}
                 </span>
+              </div>
+            </div>
+
+            {/* ── Wallet Identity Section ── */}
+            <div className="rounded-[6px] border border-border-subtle bg-deep px-4 py-4">
+              <span className="block text-[10px] font-semibold uppercase tracking-[0.08em] text-text-muted">
+                Wallet Identity
+              </span>
+              <div className="mt-3 space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-text-muted">Owner wallet</span>
+                  <span className="font-mono text-text-secondary">
+                    {receipt.ownerShortAddress ?? "No wallet owner recorded"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-text-muted">Wallet-linked</span>
+                  <span
+                    className={
+                      isWalletLinked ? "text-safe" : "text-text-muted"
+                    }
+                  >
+                    {isWalletLinked ? "Yes" : "No"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-text-muted">Network</span>
+                  <span className="text-text-secondary">
+                    {receipt.network ?? "Casper Testnet"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-text-muted">Mode</span>
+                  <span className="text-text-secondary">
+                    {receipt.mode ?? "Demo Receipt"}
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -194,6 +258,80 @@ export default function ReceiptPage({
           </div>
         </div>
 
+        {/* Action row */}
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+          <Link
+            href="/policies"
+            className="inline-flex items-center gap-2 rounded-[6px] border border-border-subtle bg-surface px-4 py-2 text-sm text-text-secondary transition hover:border-border-default hover:text-text-primary"
+          >
+            &larr; Back to Policies
+          </Link>
+          <Link
+            href="/risk"
+            className="inline-flex items-center gap-2 rounded-[6px] border border-border-subtle bg-surface px-4 py-2 text-sm text-text-secondary transition hover:border-border-default hover:text-text-primary"
+          >
+            &larr; Risk Monitor
+          </Link>
+          <button
+            type="button"
+            onClick={handleCopyJson}
+            className="inline-flex items-center gap-2 rounded-[6px] border border-border-subtle bg-surface px-4 py-2 text-sm text-text-secondary transition hover:border-border-default hover:text-text-primary"
+          >
+            {copiedJson ? (
+              <>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M20 6L9 17L4 12"
+                    stroke="#76D99C"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Copied
+              </>
+            ) : (
+              <>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <rect
+                    x="9"
+                    y="9"
+                    width="13"
+                    height="13"
+                    rx="2"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M5 15H4C3.46957 15 2.96086 14.7893 2.58579 14.4142C2.21071 14.0391 2 13.5304 2 13V4C2 3.46957 2.21071 2.96086 2.58579 2.58579C2.96086 2.21071 3.46957 2 4 2H13C13.5304 2 14.0391 2.21071 14.4142 2.58579C14.7893 2.96086 15 3.46957 15 4V5"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Copy Receipt JSON
+              </>
+            )}
+          </button>
+        </div>
+
         {/* Casper deployment disclaimer */}
         <div className="mt-8 rounded-2xl border border-border-default bg-deep p-6 text-center">
           <p className="text-sm leading-6 text-text-secondary">
@@ -201,16 +339,6 @@ export default function ReceiptPage({
             is connected. The receipt above uses demo transaction hashes and
             simulated payouts for prototype demonstration.
           </p>
-        </div>
-
-        {/* Back Link */}
-        <div className="mt-8 text-center">
-          <Link
-            href="/policies"
-            className="inline-flex items-center gap-2 text-sm text-text-secondary transition hover:text-gold"
-          >
-            &larr; Back to Policies
-          </Link>
         </div>
       </div>
     </div>

@@ -26,6 +26,11 @@ export interface Policy {
   selectedTriggers: string[];
   createdAt: number;
   txHash: string;
+  ownerPublicKey?: string;
+  ownerShortAddress?: string;
+  network?: string;
+  signedByWallet?: boolean;
+  mode?: string;
 }
 
 export interface ClaimSignal {
@@ -56,6 +61,11 @@ export interface CoverReceipt {
   riskReportHash: string;
   transactions: TxHash[];
   createdAt: number;
+  ownerPublicKey?: string;
+  ownerShortAddress?: string;
+  network?: string;
+  mode?: string;
+  walletLinked?: boolean;
 }
 
 export interface TxHash {

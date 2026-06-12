@@ -11,6 +11,7 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { TriggerBadge } from "@/components/TriggerBadge";
 import { DemoModeBadge } from "@/components/DemoModeBadge";
 import { OnchainPendingBadge } from "@/components/OnchainPendingBadge";
+import { useWallet } from "@/components/WalletProvider";
 
 export default function ClaimPage({
   params,
@@ -19,6 +20,7 @@ export default function ClaimPage({
 }) {
   const { policyId } = use(params);
   const router = useRouter();
+  const { address, isConnected, connect } = useWallet();
 
   const claimSignal = useSyncExternalStore(
     subscribeClaimSignal,
@@ -54,6 +56,13 @@ export default function ClaimPage({
           selectedTriggers: [claimSignal.triggerType],
           createdAt: Date.now(),
           txHash: generateTxHash(),
+          ownerPublicKey: address ?? undefined,
+          ownerShortAddress: address
+            ? `${address.slice(0, 4)}…${address.slice(-4)}`
+            : undefined,
+          network: "Casper Testnet",
+          signedByWallet: !!address,
+          mode: "Demo Mode",
         };
         savePolicy(activePolicy);
       } else {
@@ -67,6 +76,12 @@ export default function ClaimPage({
 
     router.push(`/receipt/${activePolicy!.id}`);
   };
+
+  // Wallet gate checks
+  const policyOwnsWallet = policy?.ownerPublicKey;
+  const walletMismatch =
+    policyOwnsWallet && isConnected && address !== policyOwnsWallet;
+  const walletMissing = policyOwnsWallet && !isConnected;
 
   return (
     <div className="px-5 py-20 sm:px-8 lg:px-14">
@@ -128,6 +143,16 @@ export default function ClaimPage({
                         {policy.id}
                       </span>
                     </div>
+                    {policy.ownerShortAddress && (
+                      <div>
+                        <span className="block text-xs font-semibold uppercase tracking-[0.08em] text-text-muted">
+                          Policy Owner
+                        </span>
+                        <span className="mt-1 block font-mono text-xs text-gold">
+                          {policy.ownerShortAddress}
+                        </span>
+                      </div>
+                    )}
                     <div>
                       <span className="block text-xs font-semibold uppercase tracking-[0.08em] text-text-muted">
                         Vault
@@ -176,14 +201,49 @@ export default function ClaimPage({
                   </p>
                 )}
 
-                <button
-                  type="button"
-                  onClick={handleSubmitClaim}
-                  disabled={submitting}
-                  className="mt-8 w-full rounded-[6px] border border-white/10 bg-gold px-7 py-4 text-center font-semibold text-obsidian transition hover:-translate-y-0.5 hover:bg-[#F0CCA0] hover:shadow-[0_0_24px_rgba(230,192,138,0.16)] disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {submitting ? "Submitting..." : "Submit Claim"}
-                </button>
+                {walletMissing ? (
+                  <div className="mt-8 space-y-3">
+                    <button
+                      type="button"
+                      disabled
+                      className="w-full rounded-[6px] border border-border-divider bg-raised px-7 py-4 text-center font-semibold text-text-muted cursor-not-allowed"
+                    >
+                      Submit Claim
+                    </button>
+                    <p className="text-center text-xs leading-5 text-text-muted">
+                      Reconnect the policy wallet to submit this claim signal.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={connect}
+                      className="flex w-full items-center justify-center gap-2 rounded-[6px] border border-[rgba(230,192,138,0.55)] bg-gold px-5 py-2.5 text-sm font-semibold text-obsidian transition hover:bg-[#F0CCA0]"
+                    >
+                      Connect Wallet
+                    </button>
+                  </div>
+                ) : walletMismatch ? (
+                  <div className="mt-8 space-y-3">
+                    <button
+                      type="button"
+                      disabled
+                      className="w-full rounded-[6px] border border-danger bg-[rgba(214,106,94,0.06)] px-7 py-4 text-center font-semibold text-danger cursor-not-allowed"
+                    >
+                      Wallet Mismatch
+                    </button>
+                    <p className="text-center text-xs leading-5 text-danger">
+                      Connected wallet does not match policy owner.
+                    </p>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleSubmitClaim}
+                    disabled={submitting}
+                    className="mt-8 w-full rounded-[6px] border border-white/10 bg-gold px-7 py-4 text-center font-semibold text-obsidian transition hover:-translate-y-0.5 hover:bg-[#F0CCA0] hover:shadow-[0_0_24px_rgba(230,192,138,0.16)] disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {submitting ? "Submitting..." : "Submit Claim"}
+                  </button>
+                )}
                 <p className="mt-3 text-center text-xs text-text-muted">
                   Simulated claim submission on Casper Testnet
                 </p>
