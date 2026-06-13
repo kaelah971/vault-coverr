@@ -332,12 +332,13 @@ export default function ReceiptPage({
           </button>
         </div>
 
-        {/* Casper deployment disclaimer */}
+        {/* Casper deployment status */}
         <div className="mt-8 rounded-2xl border border-border-default bg-deep p-6 text-center">
           <p className="text-sm leading-6 text-text-secondary">
-            Verified Casper Receipt will appear here after contract deployment
-            is connected. The receipt above uses demo transaction hashes and
-            simulated payouts for prototype demonstration.
+            VaultCover contract is deployed on Casper Testnet.
+            Demo receipts are wallet-linked locally until contract write calls
+            are connected. Policy creation and claim processing are not yet
+            on-chain.
           </p>
         </div>
       </div>
