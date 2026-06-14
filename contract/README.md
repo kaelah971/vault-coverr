@@ -225,6 +225,28 @@ casper-client put-deploy \
   --session-arg "claim_id:string='CLM-ff1e2d3c4b5a6978'"
 ```
 
+## On-chain Demo Proof — Casper Testnet
+
+The full protocol lifecycle has been executed on Casper Testnet. Each deploy is
+independently verifiable via the Casper block explorer.
+
+| Step | Deploy Hash |
+|---|---|
+| Contract deploy | `ff23737d43dca7740e197f8d1f0de2be107840c27d059e707272ac313b46ef32` |
+| Register vault — Stable Yield | `4258b56777f47a35d24711b84e71c1171898e895e3306fc744148775454491d6` |
+| Register vault — RWA Invoice | `7385f81f5d466e1a12129df80e199941bf1f91a70a45e178993da394398f3782` |
+| Register vault — High APY | `2d1f755f5b0bb04a9c454ad4f68707db386d78d796eb29501bb2989b17bf88fa` |
+| Update metrics — Stable Yield | `42fcee4b985a992b3707dfbd1bd9f3e7efeda740da99ba6e924594fd2061e9f4` |
+| Update metrics — RWA Invoice | `80c7a784d257d61b364e37899c3daf1ff9042f600546944e1b29498893a34856` |
+| Update metrics — High APY | `0d9be7de86601cef8ef2913f5ee20f928bb449c0963d4112b58497694fa2f1c1` |
+| Create cover policy | `0f26e6ba09022d0f2054434a34a496c1f46f0b19c10fda2894ad53e2a2972bd6` |
+| Submit risk event | `c89a2b8fabba93dbb50694d1eb2bad9aca7a1a4871008051ae1d8436f6dc19dc` |
+| Submit claim | `4fd73edfa2ac903477f45df3608fdd98f747bd1ce224f70b3253aec898ca541d` |
+| Process claim / payout | `07ad7bed10f69531f142499654e1ca37c275f68bcc6b8aceeb8e6c98ef33ab79` |
+
+**Contract hash:** `hash-2f485675833c0abd6faa96803dd3cd02a35e6afc363fc545d2cdb4a05733b68a`
+**Package hash:** `hash-9dace66d4ce2d19118b46aa8e194a553ba1d8ad8f881a6e378f71c49751d16d8`
+
 ## Legal-Safe Language
 
 This contract implements a **parametric cover prototype**. It does NOT implement insurance, guaranteed payouts, underwritten policies, or regulated claims. All payouts are simulated and recorded as verifiable on-chain events on Casper Testnet.
