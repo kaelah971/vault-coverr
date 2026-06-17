@@ -97,6 +97,21 @@ export function PolicyCard({ policy, onClaim }: PolicyCardProps) {
         ))}
       </div>
 
+      {/* Covered Asset */}
+      <div className="mt-4 rounded-[6px] border border-gold/15 bg-[rgba(230,192,138,0.04)] px-4 py-3">
+        <span className="block text-[10px] font-semibold uppercase tracking-[0.08em] text-gold">
+          Covered Asset
+        </span>
+        {policy.coveredAsset ? (
+          <div className="mt-2 space-y-1 text-xs">
+            <p className="text-text-primary">{policy.coveredAsset.assetName}</p>
+            <p className="text-text-muted">Exposure: {policy.coveredAsset.exposureValue} {policy.coveredAsset.currency}</p>
+          </div>
+        ) : (
+          <p className="mt-1 text-xs text-text-muted">Not linked to demo asset</p>
+        )}
+      </div>
+
       {/* Wallet Identity Section */}
       <div className="mt-5 rounded-[6px] border border-border-subtle bg-deep px-4 py-3">
         <span className="block text-[10px] font-semibold uppercase tracking-[0.08em] text-text-muted">

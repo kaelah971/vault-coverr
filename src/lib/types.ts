@@ -6,11 +6,20 @@ export interface Vault {
   apy: number;
   tvl: number;
   tvlFormatted: string;
+  baseLiquidity: number;
   riskScore: number;
   riskLabel: "Low" | "Medium" | "High";
   activePolicies: number;
   triggers: string[];
   features: string[];
+}
+
+export interface CoveredAsset {
+  assetId: string;
+  assetName: string;
+  exposureValue: number;
+  currency: string;
+  claimedAt: number;
 }
 
 export interface Policy {
@@ -31,6 +40,7 @@ export interface Policy {
   network?: string;
   signedByWallet?: boolean;
   mode?: string;
+  coveredAsset?: CoveredAsset;
 }
 
 export interface ClaimSignal {
@@ -66,6 +76,7 @@ export interface CoverReceipt {
   network?: string;
   mode?: string;
   walletLinked?: boolean;
+  coveredAsset?: CoveredAsset;
 }
 
 export interface TxHash {

@@ -1,7 +1,6 @@
 import { VAULTS } from "@/lib/mock-data";
 import { VaultCard } from "@/components/VaultCard";
 import { SectionHeader } from "@/components/SectionHeader";
-import { Metric } from "@/components/Metric";
 import { DemoModeBadge } from "@/components/DemoModeBadge";
 import { ContractStatusPanel } from "@/components/ContractStatusPanel";
 
@@ -21,6 +20,26 @@ export default function VaultsPage() {
         />
         <div className="shrink-0 self-start pt-2">
           <DemoModeBadge />
+        </div>
+      </div>
+
+      {/* Demo TVL Summary */}
+      <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div className="rounded-xl border border-border-subtle bg-surface p-4 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-text-muted">Total Demo TVL</p>
+          <p className="mt-1 font-mono text-xl font-bold text-text-primary">{totalTVL} CSPR</p>
+        </div>
+        <div className="rounded-xl border border-border-subtle bg-surface p-4 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-text-muted">Avg Risk Score</p>
+          <p className="mt-1 font-mono text-xl font-bold text-text-primary">{avgRiskScore}/100</p>
+        </div>
+        <div className="rounded-xl border border-border-subtle bg-surface p-4 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-text-muted">Active Vaults</p>
+          <p className="mt-1 font-mono text-xl font-bold text-text-primary">{VAULTS.length}</p>
+        </div>
+        <div className="rounded-xl border border-border-subtle bg-surface p-4 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-text-muted">Network</p>
+          <p className="mt-1 font-mono text-lg font-bold text-text-primary">Casper Testnet</p>
         </div>
       </div>
 
@@ -49,25 +68,6 @@ export default function VaultsPage() {
             <FlowArrow />
             <FlowStep label="Cover Receipt" detail="Recorded on-chain" />
           </div>
-        </div>
-      </div>
-
-      {/* Summary metrics */}
-      <div className="mb-12 grid grid-cols-3 gap-4">
-        <div className="rounded-xl border border-border-subtle bg-surface p-5">
-          <Metric label="Total Vaults" value={String(VAULTS.length)} />
-        </div>
-        <div className="rounded-xl border border-border-subtle bg-surface p-5">
-          <Metric
-            label="Total TVL"
-            value={`$${(totalTVL / 1_000_000).toFixed(1)}M`}
-          />
-        </div>
-        <div className="rounded-xl border border-border-subtle bg-surface p-5">
-          <Metric
-            label="Avg Risk Score"
-            value={`${avgRiskScore} / 100`}
-          />
         </div>
       </div>
 

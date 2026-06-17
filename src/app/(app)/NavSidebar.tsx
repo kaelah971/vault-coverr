@@ -8,6 +8,7 @@ import { ConnectWallet } from "@/components/ConnectWallet";
 const appLinks = [
   { href: "/vaults", label: "Vaults" },
   { href: "/policies", label: "Policies" },
+  { href: "/health", label: "Vault Health Monitor" },
   { href: "/risk", label: "Risk Monitor" },
 ];
 

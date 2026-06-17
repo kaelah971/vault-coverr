@@ -195,10 +195,10 @@ export function ContractStatusPanel() {
             <HashRow label="Contract hash" value={CONTRACT_HASH} />
           </div>
           <p className="mt-6 text-xs leading-5 text-text-muted">
-            The VaultCover smart contract is deployed and live on Casper Testnet.
-            The full protocol lifecycle has been executed on-chain. Frontend
-            write calls to the contract are pending integration. The current app
-            uses demo state stored in your browser to simulate interactions.
+            VaultCover&apos;s contract is deployed on Casper Testnet. This
+            MVP uses wallet-linked demo records for the live product flow,
+            while Casper Testnet proof hashes demonstrate the protocol
+            lifecycle.
           </p>
         </div>
       </section>

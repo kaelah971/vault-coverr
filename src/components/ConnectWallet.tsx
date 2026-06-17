@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useWallet } from "@/components/WalletProvider";
 import { formatAddress } from "@/lib/casper-wallet";
 
@@ -146,8 +146,12 @@ export function ConnectWallet() {
     error,
   } = useWallet();
 
+  const [mounted, setMounted] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setMounted(true); }, []);
 
   const handleCopy = async () => {
     if (!address) return;
@@ -159,6 +163,16 @@ export function ConnectWallet() {
       // Clipboard not available — silently ignore
     }
   };
+
+  // ── SSR placeholder (prevents hydration mismatch) ────────────────────────
+  if (!mounted) {
+    return (
+      <div className="flex items-center gap-2 px-1">
+        <div className="h-8 w-8 animate-pulse rounded-full bg-surface-elevated" />
+        <div className="h-4 w-24 animate-pulse rounded bg-surface-elevated" />
+      </div>
+    );
+  }
 
   // ── Not installed ────────────────────────────────────────────────────────
   if (!isInstalled) {

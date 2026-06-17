@@ -154,3 +154,94 @@ export function resetDemoState(): void {
   receiptsCache = [];
   notify();
 }
+
+/* ------------------------------------------------------------------ */
+/*  Demo assets — wallet-linked claimed receipts                       */
+/* ------------------------------------------------------------------ */
+
+const ASSETS_KEY_PREFIX = "vaultcover:demo-assets:";
+
+export interface DemoAsset {
+  assetId: string;
+  assetName: string;
+  vaultId: string;
+  vaultName: string;
+  exposureValue: number;
+  currency: string;
+}
+
+export interface ClaimedAsset extends DemoAsset {
+  wallet: string;
+  claimedAt: number;
+}
+
+const BASE_LIQUIDITY: Record<string, number> = {
+  "stable-yield-vault": 500,
+  "rwa-invoice-vault": 500,
+  "high-apy-experimental": 500,
+};
+
+export const DEMO_ASSETS: Record<string, DemoAsset[]> = {
+  "stable-yield-vault": [
+    { assetId: "demo-tbill-receipt", assetName: "Demo Treasury Bill Receipt", vaultId: "stable-yield-vault", vaultName: "Stable Yield Vault", exposureValue: 10, currency: "CSPR" },
+    { assetId: "demo-stable-yield-note", assetName: "Demo Stablecoin Yield Note", vaultId: "stable-yield-vault", vaultName: "Stable Yield Vault", exposureValue: 10, currency: "CSPR" },
+  ],
+  "rwa-invoice-vault": [
+    { assetId: "demo-invoice-note", assetName: "Demo Invoice Note", vaultId: "rwa-invoice-vault", vaultName: "RWA Invoice Vault", exposureValue: 10, currency: "CSPR" },
+    { assetId: "demo-trade-finance-receipt", assetName: "Demo Trade Finance Receipt", vaultId: "rwa-invoice-vault", vaultName: "RWA Invoice Vault", exposureValue: 10, currency: "CSPR" },
+  ],
+  "high-apy-experimental": [
+    { assetId: "demo-tsla-exposure", assetName: "Demo TSLA Exposure Receipt", vaultId: "high-apy-experimental", vaultName: "High APY Experimental Vault", exposureValue: 10, currency: "CSPR" },
+    { assetId: "demo-aapl-exposure", assetName: "Demo AAPL Exposure Receipt", vaultId: "high-apy-experimental", vaultName: "High APY Experimental Vault", exposureValue: 10, currency: "CSPR" },
+  ],
+};
+
+function assetStoreKey(wallet: string): string {
+  return `${ASSETS_KEY_PREFIX}${wallet}`;
+}
+
+export function getClaimedAssets(wallet: string | null): ClaimedAsset[] {
+  if (typeof window === "undefined" || !wallet) return [];
+  try {
+    const raw = localStorage.getItem(assetStoreKey(wallet));
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function getClaimedAssetsForVault(
+  wallet: string | null,
+  vaultId: string
+): ClaimedAsset[] {
+  return getClaimedAssets(wallet).filter((a) => a.vaultId === vaultId);
+}
+
+export function claimDemoAsset(
+  wallet: string,
+  asset: DemoAsset
+): ClaimedAsset {
+  const existing = getClaimedAssets(wallet);
+  if (existing.find((a) => a.assetId === asset.assetId)) {
+    return existing.find((a) => a.assetId === asset.assetId)!;
+  }
+  const claimed: ClaimedAsset = {
+    ...asset,
+    wallet,
+    claimedAt: Date.now(),
+  };
+  existing.push(claimed);
+  localStorage.setItem(assetStoreKey(wallet), JSON.stringify(existing));
+  notify();
+  return claimed;
+}
+
+export function getDemoVaultTVL(
+  vaultId: string,
+  wallet: string | null
+): number {
+  const base = BASE_LIQUIDITY[vaultId] ?? 0;
+  const claimed = getClaimedAssetsForVault(wallet, vaultId);
+  const exposure = claimed.reduce((s, a) => s + a.exposureValue, 0);
+  return base + exposure;
+}

@@ -1,252 +1,367 @@
-# VaultCoverContract — Odra Smart Contract
+# VaultCover Agent
 
-AI-monitored parametric cover prototype for Casper DeFi and RWA vaults.
+AI-monitored parametric cover for demo tokenized assets and DeFi/RWA vault exposure on Casper.
 
-## Prerequisites
+VaultCover Agent is a Casper-native prototype that shows how users can protect vault or tokenized asset exposure through an AI-monitored cover lifecycle.
 
-- [Rust toolchain](https://rustup.rs/)
-- `wasm32-unknown-unknown` target:
+The product lets a user connect a Casper wallet, claim a wallet-linked demo asset exposure, buy cover for that asset, activate protection, receive AI risk signals, submit a claim, and generate a structured cover receipt.
 
-  ```bash
-  rustup target add wasm32-unknown-unknown
-  ```
+The MVP uses demo assets because real-world tokenized asset markets are still early on Casper. Instead of pretending the assets already exist, VaultCover creates wallet-linked demo receipts for assets like stablecoin yield notes, treasury bill exposure, invoice-backed exposure, and equity-style demo assets. These receipts let the full protection flow be demonstrated end-to-end.
 
-- [wasm-strip](https://github.com/WebAssembly/wabt) (wabt)
-- [wasm-opt](https://github.com/WebAssembly/binaryen) (binaryen)
-- Cargo Odra:
+---
 
-  ```bash
-  cargo install cargo-odra --locked
-  ```
+## What VaultCover Solves
 
-## Build
+As tokenized assets, RWA vaults, and DeFi yield products grow, users need a simple way to understand and manage risk.
 
-```bash
-cd contract
-cargo odra build
+Most users do not want to manually track:
+
+* vault TVL drops
+* APY collapses
+* oracle failures
+* abnormal withdrawals
+* delayed RWA payments
+* strategy deviation
+* risk score breaches
+
+VaultCover acts as a parametric cover layer on top of these assets and vaults.
+
+The core idea is simple:
+
+```txt
+User holds an asset
+→ User buys cover for that asset
+→ AI Risk Agent monitors risk triggers
+→ Trigger event is detected
+→ User submits a claim signal
+→ Cover receipt is generated
 ```
 
-Compiled WASM is written to `contract/wasm/`.
+---
 
-To build the Casper Contract Schema:
+## Core Feature
 
-```bash
-cargo odra schema
+VaultCover’s core feature is a wallet-linked cover lifecycle.
+
+A user can:
+
+1. Connect Casper Wallet
+2. Select a vault
+3. Claim a demo asset exposure linked to their wallet
+4. Create a demo cover policy for that asset
+5. Activate cover
+6. View the policy in their dashboard
+7. Submit a claim when the AI Risk Agent detects a trigger
+8. Receive a cover receipt showing the protected asset, claim status, payout simulation, and Casper Testnet proof references
+
+This gives judges a clear product flow:
+
+```txt
+Asset → Cover → Risk Signal → Claim → Receipt
 ```
 
-Schema JSON is written to `contract/resources/`.
+---
 
-## Test
+## Demo Assets
 
-Run against the local OdraVM (fast, no Casper node needed):
+Each vault includes demo assets that represent the kind of exposure VaultCover is designed to protect.
 
-```bash
-cd contract
-cargo odra test
+Examples include:
+
+* Demo Stablecoin Yield Note
+* Demo Treasury Bill Receipt
+* Demo RWA Invoice Exposure
+* Demo TSLA Exposure Receipt
+* Demo AAPL Exposure Receipt
+
+Each claimed asset is wallet-linked and shown inside the policy and receipt flow.
+
+The demo asset receipt proves the user has an exposure before they can create cover for it.
+
+---
+
+## Vaults
+
+VaultCover currently includes three demo vaults:
+
+### Stable Yield Vault
+
+A lower-risk vault for stable yield exposure.
+
+Example protected risks:
+
+* APY collapse
+* TVL drop
+
+### RWA Invoice Vault
+
+A real-world asset style vault for invoice-backed exposure.
+
+Example protected risks:
+
+* RWA payment delay
+* oracle failure
+* TVL drop
+* strategy deviation
+
+### High APY Experimental Vault
+
+A higher-risk vault for aggressive yield strategies.
+
+Example protected risks:
+
+* APY collapse
+* TVL drop
+* withdrawal spike
+* risk score breach
+
+---
+
+## AI Risk Agent
+
+The AI Risk Agent is responsible for detecting whether a cover trigger has been breached.
+
+In the MVP, the AI Risk Agent produces structured risk signals such as:
+
+* vault ID
+* risk score
+* trigger type
+* confidence score
+* event summary
+* recommended action
+* risk report hash
+
+Example:
+
+```json
+{
+  "vault_id": "rwa-invoice-vault",
+  "risk_score": 84,
+  "trigger_type": "TVL_DROP",
+  "confidence": "91%",
+  "summary": "Vault liquidity fell 45% in 6h. TVL_DROP breached.",
+  "recommended_action": "Submit claim signal"
+}
 ```
 
-Run against the CasperVM backend:
+---
 
-```bash
-cargo odra test -b casper
+## Cover Receipt
+
+After a claim signal is submitted, VaultCover generates a structured cover receipt.
+
+The receipt includes:
+
+* policy ID
+* vault name
+* covered asset
+* wallet owner
+* trigger type
+* claim status
+* cover amount
+* payout simulation
+* risk report hash
+* Casper Testnet transaction/proof references
+
+The receipt is designed to be the user-facing proof that their cover lifecycle completed.
+
+---
+
+## Casper Integration
+
+VaultCover is built for Casper and includes Casper Testnet proof records.
+
+Current Casper-related implementation includes:
+
+* Casper Wallet connection
+* Casper Testnet contract deployment
+* Casper Testnet proof hashes for the protocol lifecycle
+* wallet-linked demo records
+* contract status section showing deployment and protocol proof trail
+
+The MVP currently uses a hybrid demo architecture:
+
+### On-chain / Casper Testnet
+
+* Smart contract deployed on Casper Testnet
+* Contract proof hashes shown in the app
+* Protocol lifecycle proof records displayed
+* Casper Wallet connection
+* Wallet-linked user flows
+
+### Demo-mode / Frontend Simulation
+
+* demo asset receipts
+* demo policy creation
+* cover activation
+* claim submission
+* payout simulation
+* receipt generation
+
+This approach keeps the demo smooth while still showing how the final product would work once full contract writes are connected for every user action.
+
+---
+
+## Why Demo Mode Exists
+
+Real tokenized RWA assets are not broadly available on Casper yet.
+
+To still demonstrate the product clearly, VaultCover uses demo asset receipts that represent assets a user might hold in the future, such as tokenized treasury bills, invoice-backed exposure, or equity-style assets.
+
+This lets the MVP show the real product logic:
+
+```txt
+I hold this asset.
+I bought cover for this asset.
+A risk event happened.
+I filed a claim.
+I received a receipt.
 ```
 
-## Contract Overview
+---
 
-**VaultCoverContract** stores four entity types:
+## User Flow
 
-| Entity | Storage | Purpose |
-|---|---|---|
-| `Vault` | `Mapping<String, Vault>` | Registered DeFi/RWA vaults |
-| `CoverPolicy` | `Mapping<String, CoverPolicy>` | Parametric cover policies |
-| `RiskEvent` | `Mapping<String, RiskEvent>` | AI agent risk trigger events |
-| `Claim` | `Mapping<String, Claim>` | Claim submissions and payouts |
+### 1. Connect Wallet
 
-### Entrypoints
+The user connects their Casper Wallet.
 
-| Entrypoint | Args | Description |
-|---|---|---|
-| `init()` | — | Initializes empty state |
-| `register_vault` | vault_id, name_hash, category, metadata_hash | Register a new vault |
-| `update_vault_metrics` | vault_id, apy, tvl, risk_score | Update vault APY/TVL/risk |
-| `create_cover_policy` | policy_id, vault_id, cover_amount, premium, expiry | Create a cover policy |
-| `submit_risk_event` | risk_event_id, vault_id, trigger_type, risk_score, evidence_hash, confidence | Submit AI risk event |
-| `submit_claim` | claim_id, policy_id, risk_event_id | Submit a claim signal |
-| `process_claim` | claim_id, approved, payout_amount | Process claim (payout simulation) |
-| `get_vault` | vault_id | Read vault data |
-| `get_policy` | policy_id | Read policy data |
-| `get_risk_event` | risk_event_id | Read risk event data |
-| `get_claim` | claim_id | Read claim data |
+### 2. Select Vault
 
-### Events
+The user chooses one of the demo vaults.
 
-| Event | Emitted when |
-|---|---|
-| `VaultRegistered` | A vault is registered |
-| `VaultMetricsUpdated` | Vault metrics are updated |
-| `CoverPolicyCreated` | A new cover policy is created |
-| `RiskEventSubmitted` | A risk event is submitted |
-| `ClaimSubmitted` | A claim is submitted |
-| `ClaimProcessed` | A claim is processed |
+### 3. Claim Demo Asset
 
-### Errors
+The user claims a wallet-linked demo asset exposure inside that vault.
 
-| Error | Discriminant |
-|---|---|
-| `VaultAlreadyExists` | 1 |
-| `VaultNotFound` | 2 |
-| `VaultNotActive` | 3 |
-| `PolicyAlreadyExists` | 4 |
-| `PolicyNotFound` | 5 |
-| `PolicyExpired` | 6 |
-| `RiskEventAlreadyExists` | 7 |
-| `RiskEventNotFound` | 8 |
-| `ClaimAlreadyExists` | 9 |
-| `ClaimNotFound` | 10 |
-| `ClaimAlreadyProcessed` | 11 |
-| `AccessDenied` | 12 |
+### 4. Create Demo Policy
 
-## Demo Flow — Example Calls
+The user creates cover for the selected asset.
 
-These calls replicate the VaultCover Agent frontend demo on Casper Testnet.
+### 5. Activate Cover
 
-### 1. Register three demo vaults
+The policy becomes active and appears in the Policies dashboard.
 
-```bash
-# Stable Yield Vault (low risk)
-casper-client put-deploy \
-  --chain-name casper-test \
-  --node-address http://<NODE_IP>:7777 \
-  --secret-key /path/to/secret_key.pem \
-  --session-hash <CONTRACT_HASH> \
-  --session-entry-point "register_vault" \
-  --session-arg "vault_id:string='stable-yield-vault'" \
-  --session-arg "name_hash:string='0xabc001'" \
-  --session-arg "category:string='Stable DeFi'" \
-  --session-arg "metadata_hash:string='0xmeta001'"
+### 6. File Claim
 
-# RWA Invoice Vault (medium risk)
-casper-client put-deploy \
-  ... \
-  --session-arg "vault_id:string='rwa-invoice-vault'" \
-  --session-arg "name_hash:string='0xdef001'" \
-  --session-arg "category:string='RWA · Featured'" \
-  --session-arg "metadata_hash:string='0xmeta002'"
+When a risk trigger is active, the user submits a claim signal.
 
-# High APY Experimental Vault (high risk)
-casper-client put-deploy \
-  ... \
-  --session-arg "vault_id:string='high-apy-experimental'" \
-  --session-arg "name_hash:string='0xghi001'" \
-  --session-arg "category:string='Experimental'" \
-  --session-arg "metadata_hash:string='0xmeta003'"
+### 7. Receive Receipt
+
+VaultCover generates a cover receipt with policy, claim, asset, and proof details.
+
+---
+
+## Pages
+
+The MVP includes:
+
+* Landing page
+* Vault explorer
+* Vault detail page
+* Buy cover page
+* Policies dashboard
+* Claim signal page
+* Cover receipt page
+* Vault health monitor
+* Risk monitor
+* Contract status / proof section
+
+---
+
+## Tech Stack
+
+* Next.js
+* TypeScript
+* Tailwind CSS
+* Casper Wallet integration
+* Casper Testnet
+* Odra smart contract framework
+* Rust smart contract
+* Local wallet-linked demo state for MVP flow
+
+---
+
+## Smart Contract
+
+The VaultCover smart contract was built with Odra for Casper.
+
+Implemented contract concepts include:
+
+* vault registration
+* vault metrics
+* risk events
+* cover policies
+* claims
+* claim processing
+
+The contract was deployed to Casper Testnet and the app displays contract/protocol proof records.
+
+---
+
+## MVP Scope
+
+This is a hackathon MVP, so the goal is not to ship a production insurance protocol.
+
+The goal is to prove the product loop:
+
+```txt
+wallet-linked asset exposure
+→ parametric cover policy
+→ AI-monitored risk trigger
+→ claim signal
+→ cover receipt
 ```
 
-### 2. Update vault metrics
+The MVP focuses on showing how VaultCover can become an AI-powered cover layer for tokenized assets, RWA vaults, and DeFi yield products on Casper.
 
-```bash
-# Stable Yield: APY 5.2%, TVL $4.7M, risk 18
-casper-client put-deploy \
-  --session-hash <CONTRACT_HASH> \
-  --session-entry-point "update_vault_metrics" \
-  --session-arg "vault_id:string='stable-yield-vault'" \
-  --session-arg "apy:u64='520'" \
-  --session-arg "tvl:u64='4700000'" \
-  --session-arg "risk_score:u8='18'"
+---
 
-# RWA Invoice: APY 8.4%, TVL $2.1M, risk 47
---session-arg "vault_id:string='rwa-invoice-vault'" \
---session-arg "apy:u64='840'" \
---session-arg "tvl:u64='2100000'" \
---session-arg "risk_score:u8='47'"
+## Future Improvements
 
-# High APY Experimental: APY 38.7%, TVL $0.8M, risk 83
---session-arg "vault_id:string='high-apy-experimental'" \
---session-arg "apy:u64='3870'" \
---session-arg "tvl:u64='800000'" \
---session-arg "risk_score:u8='83'"
+Planned improvements include:
+
+* full on-chain policy creation
+* full on-chain claim submission
+* full on-chain payout simulation records
+* live vault data feeds
+* oracle integration
+* real tokenized asset support when available on Casper
+* admin dashboard for vault operators
+* richer AI risk scoring
+* receipt export and verification
+* user portfolio view for covered assets
+
+---
+
+## Demo Walkthrough
+
+A typical demo flow:
+
+1. Open VaultCover
+2. Connect Casper Wallet
+3. Go to Vaults
+4. Select a vault
+5. Click Buy Cover
+6. Claim a demo asset receipt
+7. Create a demo policy
+8. Activate cover
+9. Go to Policies
+10. File a claim
+11. Review the AI Risk Agent signal
+12. Submit claim
+13. View the cover receipt
+
+---
+
+## Summary
+
+VaultCover Agent is an AI-monitored parametric cover prototype for Casper.
+
+It shows how users can protect tokenized asset and vault exposure through a simple lifecycle:
+
+```txt
+Asset → Cover → Risk Signal → Claim → Receipt
 ```
 
-### 3. Create cover policy
-
-```bash
-casper-client put-deploy \
-  --session-hash <CONTRACT_HASH> \
-  --session-entry-point "create_cover_policy" \
-  --session-arg "policy_id:string='POL-a1b2c3d4e5f6a7b8'" \
-  --session-arg "vault_id:string='rwa-invoice-vault'" \
-  --session-arg "cover_amount:u64='10000'" \
-  --session-arg "premium:u64='150'" \
-  --session-arg "expiry:u64='172800000'"
-```
-
-### 4. Submit risk event (AI Risk Agent detects TVL_DROP)
-
-```bash
-casper-client put-deploy \
-  --session-hash <CONTRACT_HASH> \
-  --session-entry-point "submit_risk_event" \
-  --session-arg "risk_event_id:string='REV-d4f8a2b9'" \
-  --session-arg "vault_id:string='rwa-invoice-vault'" \
-  --session-arg "trigger_type:string='TVL_DROP'" \
-  --session-arg "risk_score:u8='84'" \
-  --session-arg "evidence_hash:string='0xd4f8a2b9c1e36547f09d82ab716ce93584f7a2b1093c6e58d1f472ba36e93a91'" \
-  --session-arg "confidence:u8='91'"
-```
-
-### 5. Submit claim
-
-```bash
-casper-client put-deploy \
-  --session-hash <CONTRACT_HASH> \
-  --session-entry-point "submit_claim" \
-  --session-arg "claim_id:string='CLM-ff1e2d3c4b5a6978'" \
-  --session-arg "policy_id:string='POL-a1b2c3d4e5f6a7b8'" \
-  --session-arg "risk_event_id:string='REV-d4f8a2b9'"
-```
-
-### 6. Process claim as payout simulation
-
-```bash
-casper-client put-deploy \
-  --session-hash <CONTRACT_HASH> \
-  --session-entry-point "process_claim" \
-  --session-arg "claim_id:string='CLM-ff1e2d3c4b5a6978'" \
-  --session-arg "approved:bool='true'" \
-  --session-arg "payout_amount:u64='8500'"
-```
-
-### 7. Read claim (verify Cover Receipt)
-
-```bash
-casper-client put-deploy \
-  --session-hash <CONTRACT_HASH> \
-  --session-entry-point "get_claim" \
-  --session-arg "claim_id:string='CLM-ff1e2d3c4b5a6978'"
-```
-
-## On-chain Demo Proof — Casper Testnet
-
-The full protocol lifecycle has been executed on Casper Testnet. Each deploy is
-independently verifiable via the Casper block explorer.
-
-| Step | Deploy Hash |
-|---|---|
-| Contract deploy | `ff23737d43dca7740e197f8d1f0de2be107840c27d059e707272ac313b46ef32` |
-| Register vault — Stable Yield | `4258b56777f47a35d24711b84e71c1171898e895e3306fc744148775454491d6` |
-| Register vault — RWA Invoice | `7385f81f5d466e1a12129df80e199941bf1f91a70a45e178993da394398f3782` |
-| Register vault — High APY | `2d1f755f5b0bb04a9c454ad4f68707db386d78d796eb29501bb2989b17bf88fa` |
-| Update metrics — Stable Yield | `42fcee4b985a992b3707dfbd1bd9f3e7efeda740da99ba6e924594fd2061e9f4` |
-| Update metrics — RWA Invoice | `80c7a784d257d61b364e37899c3daf1ff9042f600546944e1b29498893a34856` |
-| Update metrics — High APY | `0d9be7de86601cef8ef2913f5ee20f928bb449c0963d4112b58497694fa2f1c1` |
-| Create cover policy | `0f26e6ba09022d0f2054434a34a496c1f46f0b19c10fda2894ad53e2a2972bd6` |
-| Submit risk event | `c89a2b8fabba93dbb50694d1eb2bad9aca7a1a4871008051ae1d8436f6dc19dc` |
-| Submit claim | `4fd73edfa2ac903477f45df3608fdd98f747bd1ce224f70b3253aec898ca541d` |
-| Process claim / payout | `07ad7bed10f69531f142499654e1ca37c275f68bcc6b8aceeb8e6c98ef33ab79` |
-
-**Contract hash:** `hash-2f485675833c0abd6faa96803dd3cd02a35e6afc363fc545d2cdb4a05733b68a`
-**Package hash:** `hash-9dace66d4ce2d19118b46aa8e194a553ba1d8ad8f881a6e378f71c49751d16d8`
-
-## Legal-Safe Language
-
-This contract implements a **parametric cover prototype**. It does NOT implement insurance, guaranteed payouts, underwritten policies, or regulated claims. All payouts are simulated and recorded as verifiable on-chain events on Casper Testnet.
+The MVP combines Casper Testnet proof records, Casper Wallet connection, AI risk signals, wallet-linked demo assets, and structured cover receipts to demonstrate how parametric cover could work for future DeFi and RWA products on Casper.

@@ -76,6 +76,14 @@ export default function PoliciesPage() {
           )}
         </div>
 
+        {policies.length > 0 && (
+          <p className="mt-2 text-xs leading-5 text-text-muted">
+            Policies in this MVP are demo-mode records linked to your
+            connected wallet. They show the intended VaultCover lifecycle
+            before full contract write integration.
+          </p>
+        )}
+
         {policies.length === 0 ? (
           <div className="overflow-hidden rounded-2xl border border-border-default bg-surface p-12 text-center">
             <h2 className="font-display text-2xl font-bold text-text-primary">

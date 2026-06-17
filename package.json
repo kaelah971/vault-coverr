@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "build:contract": "powershell -ExecutionPolicy Bypass -File contract/build_wasm.ps1"
+    "build:contract": "powershell -ExecutionPolicy Bypass -File contract/build_wasm.ps1",
+    "seed:demo-vaults": "powershell -ExecutionPolicy Bypass -File scripts/seed-demo-vaults.ps1"
   },
   "dependencies": {
     "casper-js-sdk": "^5.0.12",

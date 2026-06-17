@@ -134,6 +134,25 @@ export default function ReceiptPage({
               </div>
             </div>
 
+            {/* Covered Asset */}
+            {receipt.coveredAsset && (
+              <div className="rounded-[6px] border border-gold/15 bg-[rgba(230,192,138,0.04)] px-4 py-4">
+                <span className="block text-[10px] font-semibold uppercase tracking-[0.08em] text-gold">
+                  Covered Asset
+                </span>
+                <div className="mt-3 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-text-muted">Asset name</span>
+                    <span className="text-text-primary">{receipt.coveredAsset.assetName}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-text-muted">Exposure value</span>
+                    <span className="font-mono text-text-primary">{receipt.coveredAsset.exposureValue} {receipt.coveredAsset.currency}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* ── Wallet Identity Section ── */}
             <div className="rounded-[6px] border border-border-subtle bg-deep px-4 py-4">
               <span className="block text-[10px] font-semibold uppercase tracking-[0.08em] text-text-muted">
@@ -335,10 +354,10 @@ export default function ReceiptPage({
         {/* Casper deployment status */}
         <div className="mt-8 rounded-2xl border border-border-default bg-deep p-6 text-center">
           <p className="text-sm leading-6 text-text-secondary">
-            VaultCover contract is deployed on Casper Testnet.
-            Demo receipts are wallet-linked locally until contract write calls
-            are connected. Policy creation and claim processing are not yet
-            on-chain.
+            This receipt shows a wallet-linked demo cover created for a
+            claimed demo asset receipt. The asset and policy are demo-mode
+            records, while VaultCover&apos;s Casper Testnet proof records
+            demonstrate the protocol lifecycle. Payouts are simulated.
           </p>
         </div>
       </div>
