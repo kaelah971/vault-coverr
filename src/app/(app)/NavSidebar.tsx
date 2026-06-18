@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ConnectWallet } from "@/components/ConnectWallet";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import {
   ArrowLeftIcon,
   CloseIcon,
@@ -33,15 +34,10 @@ function Brand({ onClick }: { onClick?: () => void }) {
     <Link
       href="/"
       onClick={onClick}
-      className={`inline-flex min-h-11 items-center gap-3 ${focusStyles}`}
-      aria-label="VaultCover — return to home"
+      className={`inline-flex min-h-11 items-center ${focusStyles}`}
+      aria-label="VaultCover return to home"
     >
-      <span className="grid size-8 place-items-center rounded-lg border border-[#ABFF84]/35 bg-[#ABFF84]/[0.06] text-[#ABFF84]">
-        <span className="block size-3 rotate-45 border border-current" aria-hidden="true" />
-      </span>
-      <span className="text-lg font-semibold">
-        Vault<span className="text-[#ABFF84]">Cover</span>
-      </span>
+      <BrandLogo className="w-32 sm:w-36" sizes="(max-width: 640px) 8rem, 9rem" />
     </Link>
   );
 }

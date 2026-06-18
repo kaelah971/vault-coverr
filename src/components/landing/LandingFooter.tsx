@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 const footerLinks = [
   { label: "Vaults", href: "/vaults" },
@@ -24,16 +25,20 @@ const linkStyles =
 
 export function LandingFooter() {
   return (
-    <footer id="about" className="scroll-mt-20 border-t border-[#FFFCE1]/10 bg-[#0E100F] px-4 py-10 text-[#FFFCE1] sm:px-6 lg:px-8">
+    <footer
+      data-landing-section="about"
+      id="about"
+      className="scroll-mt-20 border-t border-[#FFFCE1]/10 bg-[#0E100F] px-4 py-10 text-[#FFFCE1] sm:px-6 lg:px-8"
+    >
       <div className="mx-auto max-w-[1280px]">
         <div className="grid gap-8 border-b border-[#FFFCE1]/10 pb-8 md:grid-cols-[1fr_auto_auto] md:gap-12">
-          <div>
+          <div data-motion-reveal="lift">
             <Link
               href="/"
               aria-label="VaultCover home"
-              className="inline-flex min-h-11 items-center text-lg font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00BAE2]"
+              className="inline-flex min-h-11 items-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00BAE2]"
             >
-              Vault<span className="text-[#ABFF84]">Cover</span>
+              <BrandLogo className="w-40 sm:w-48" sizes="(max-width: 640px) 10rem, 12rem" />
             </Link>
             <p className="mt-2 max-w-sm text-sm leading-6 text-[#BBBAA6]">
               AI-monitored parametric protection for DeFi and real-world asset
@@ -41,7 +46,7 @@ export function LandingFooter() {
             </p>
           </div>
 
-          <nav aria-label="Footer navigation">
+          <nav aria-label="Footer navigation" data-motion-reveal="lift">
             <p className="mb-2 text-xs font-semibold text-[#FFFCE1]">Explore</p>
             <div className="grid grid-cols-2 gap-x-8 md:grid-cols-1">
               {footerLinks.map((item) => (
@@ -52,7 +57,7 @@ export function LandingFooter() {
             </div>
           </nav>
 
-          <div>
+          <div data-motion-reveal="lift">
             <p className="mb-2 text-xs font-semibold text-[#FFFCE1]">Connect</p>
             <div className="flex flex-col">
               {externalLinks.map((item) => (
@@ -73,7 +78,10 @@ export function LandingFooter() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 pt-6 text-xs leading-5 text-[#7C7C6F] md:flex-row md:items-start md:justify-between">
+        <div
+          data-motion-reveal="line"
+          className="flex flex-col gap-3 pt-6 text-xs leading-5 text-[#7C7C6F] md:flex-row md:items-start md:justify-between"
+        >
           <p>&copy; 2026 VaultCover.</p>
           <p className="max-w-3xl md:text-right">
             VaultCover is a Casper Testnet prototype for demonstration purposes.
