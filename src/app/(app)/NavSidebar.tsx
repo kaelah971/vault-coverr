@@ -1,42 +1,89 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ConnectWallet } from "@/components/ConnectWallet";
+import { BrandLogo } from "@/components/brand/BrandLogo";
+import {
+  ArrowLeftIcon,
+  CloseIcon,
+  HealthIcon,
+  MenuIcon,
+  PolicyIcon,
+  RiskIcon,
+  VaultIcon,
+} from "@/components/app-shell/AppShellIcons";
 
 const appLinks = [
-  { href: "/vaults", label: "Vaults" },
-  { href: "/policies", label: "Policies" },
-  { href: "/health", label: "Vault Health Monitor" },
-  { href: "/risk", label: "Risk Monitor" },
+  { href: "/vaults", label: "Vaults", detail: "Browse coverable vaults", icon: VaultIcon },
+  { href: "/policies", label: "Policies", detail: "Review your protection", icon: PolicyIcon },
+  { href: "/health", label: "Health", detail: "Inspect vault conditions", icon: HealthIcon },
+  { href: "/risk", label: "Risk", detail: "Follow agent signals", icon: RiskIcon },
 ];
 
+const focusStyles =
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00BAE2]";
+
 function isActive(pathname: string, href: string): boolean {
-  if (pathname === href) return true;
-  if (href === "/vaults") return pathname === href;
-  return pathname.startsWith(href);
+  return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function NavItems({ onClick }: { onClick?: () => void }) {
-  const pathname = usePathname();
-
+function Brand({ onClick }: { onClick?: () => void }) {
   return (
-    <ul className="space-y-1" role="list">
+    <Link
+      href="/"
+      onClick={onClick}
+      className={`inline-flex min-h-11 items-center ${focusStyles}`}
+      aria-label="VaultCover return to home"
+    >
+      <BrandLogo className="w-32 sm:w-36" sizes="(max-width: 640px) 8rem, 9rem" />
+    </Link>
+  );
+}
+
+function WorkspaceContext() {
+  return (
+    <div className="rounded-lg border border-[#42433D] bg-[#ABFF84]/[0.035] p-4">
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-xs text-[#BBBAA6]">Coverage workspace</span>
+        <span className="rounded-full border border-[#ABFF84]/35 px-2 py-1 text-[10px] font-semibold leading-none text-[#ABFF84]">
+          TESTNET
+        </span>
+      </div>
+      <p className="mt-3 text-sm leading-5 text-[#FFFCE1]">
+        AI-monitored parametric cover on Casper.
+      </p>
+    </div>
+  );
+}
+
+function NavItems({ pathname, onClick }: { pathname: string; onClick?: () => void }) {
+  return (
+    <ul className="space-y-2" role="list">
       {appLinks.map((link) => {
         const active = isActive(pathname, link.href);
+        const Icon = link.icon;
+
         return (
           <li key={link.href}>
             <Link
               href={link.href}
               onClick={onClick}
-              className={`block rounded-[6px] px-4 py-2.5 text-sm font-medium transition ${
+              aria-current={active ? "page" : undefined}
+              className={`group relative flex min-h-14 items-center gap-3 border-l-2 px-4 py-2 transition-colors motion-reduce:transition-none ${focusStyles} ${
                 active
-                  ? "border-l-2 border-gold bg-[rgba(230,192,138,0.08)] text-gold"
-                  : "text-text-secondary hover:bg-[rgba(230,192,138,0.06)] hover:text-gold"
+                  ? "border-[#ABFF84] bg-[#ABFF84]/[0.06] text-[#FFFCE1]"
+                  : "border-transparent text-[#BBBAA6] hover:border-[#42433D] hover:bg-[#FFFCE1]/[0.035] hover:text-[#FFFCE1]"
               }`}
             >
-              {link.label}
+              <Icon className={`shrink-0 ${active ? "text-[#ABFF84]" : "text-[#7C7C6F] group-hover:text-[#00BAE2]"}`} />
+              <span className="min-w-0">
+                <span className="block text-sm font-semibold leading-5">{link.label}</span>
+                <span className="block truncate text-xs font-normal leading-4 text-[#7C7C6F]">
+                  {link.detail}
+                </span>
+              </span>
             </Link>
           </li>
         );
@@ -45,193 +92,170 @@ function NavItems({ onClick }: { onClick?: () => void }) {
   );
 }
 
+function WalletArea() {
+  return (
+    <div className="border-t border-[#42433D] p-4">
+      <p className="mb-3 flex items-center gap-2 text-xs text-[#BBBAA6]">
+        <span className="relative flex size-2" aria-hidden="true">
+          <span className="absolute inline-flex size-full rounded-full bg-[#ABFF84]/40 motion-safe:animate-ping" />
+          <span className="relative inline-flex size-2 rounded-full bg-[#ABFF84]" />
+        </span>
+        Casper Testnet
+      </p>
+      <div className="[&_a]:min-h-11 [&_a]:rounded-full [&_a]:border-[#42433D] [&_a]:!bg-transparent [&_a]:text-[#FFFCE1] [&_a]:focus-visible:outline-2 [&_a]:focus-visible:outline-[#00BAE2] [&_button]:min-h-11 [&_button]:rounded-full [&_button]:border-[#42433D] [&_button]:!bg-transparent [&_button]:text-[#FFFCE1] [&_button]:shadow-none [&_button]:focus-visible:outline-2 [&_button]:focus-visible:outline-offset-2 [&_button]:focus-visible:outline-[#00BAE2] [&_button]:hover:border-[#ABFF84] [&_button]:hover:text-[#ABFF84] [&_div.absolute]:rounded-lg [&_div.absolute]:border-[#42433D] [&_div.absolute]:!bg-[#0E100F]">
+        <ConnectWallet />
+      </div>
+    </div>
+  );
+}
+
 export default function NavSidebar() {
+  const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const drawerTitleId = useId();
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const menuButton = menuButtonRef.current;
+    const appMain = document.querySelector("main");
+    appMain?.setAttribute("inert", "");
+
+    const focusableSelector =
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    const focusable = Array.from(
+      drawerRef.current?.querySelectorAll<HTMLElement>(focusableSelector) ?? []
+    );
+    focusable[0]?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMobileOpen(false);
+        return;
+      }
+      if (event.key !== "Tab" || focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      appMain?.removeAttribute("inert");
+      window.removeEventListener("keydown", handleKeyDown);
+      menuButton?.focus();
+    };
+  }, [mobileOpen]);
 
   const closeMobile = () => setMobileOpen(false);
 
   return (
     <>
-      {/* ── Desktop sidebar ── */}
-      <aside className="fixed left-0 top-0 z-40 hidden h-screen w-60 flex-col border-r border-border-subtle bg-deep lg:flex">
-        <Link
-          href="/"
-          className="flex h-20 shrink-0 items-center px-6"
-          aria-label="VaultCover — return to home"
-        >
-          <span className="font-display text-xl font-bold text-gold">
-            Vault<span className="text-text-secondary">Cover</span>
-          </span>
-        </Link>
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-72 flex-col border-r border-[#42433D] bg-[#0E100F] lg:flex">
+        <div className="flex h-20 shrink-0 items-center border-b border-[#42433D] px-6">
+          <Brand />
+        </div>
 
-        <nav className="flex-1 px-3 py-4" aria-label="Dashboard navigation">
-          <ul className="space-y-1" role="list">
-            <li>
-              <Link
-                href="/"
-                className="flex items-center gap-1.5 rounded-[6px] px-4 py-2.5 text-sm font-medium text-text-muted transition hover:bg-[rgba(230,192,138,0.06)] hover:text-gold"
-              >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M11 4L7 8L11 12"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M7 4H5V12H7"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                Back to Site
-              </Link>
-            </li>
-          </ul>
-          <div className="my-4 border-t border-border-subtle" />
-          <NavItems />
+        <div className="px-4 pt-5">
+          <WorkspaceContext />
+        </div>
+
+        <nav className="flex-1 overflow-y-auto px-4 py-6" aria-label="VaultCover workspace">
+          <p className="mb-3 px-4 text-xs text-[#7C7C6F]">Workspace</p>
+          <NavItems pathname={pathname} />
         </nav>
 
-        <div className="border-t border-border-subtle px-3 py-4">
-          <ConnectWallet />
-          <p className="mt-3 flex items-center gap-2 px-3 text-xs text-text-muted">
-            <span className="h-2 w-2 rounded-full bg-safe" />
-            Casper Testnet
-          </p>
+        <div className="px-4 pb-4">
+          <Link
+            href="/"
+            className={`flex min-h-11 items-center gap-2 px-4 text-xs text-[#7C7C6F] transition-colors hover:text-[#00BAE2] motion-reduce:transition-none ${focusStyles}`}
+          >
+            <ArrowLeftIcon className="size-4" />
+            Back to public site
+          </Link>
         </div>
+        <WalletArea />
       </aside>
 
-      {/* ── Mobile top bar ── */}
-      <div className="fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-border-subtle bg-deep px-4 lg:hidden">
-        <Link href="/" aria-label="VaultCover — return to home">
-          <span className="font-display text-lg font-bold text-gold">
-            Vault<span className="text-text-secondary">Cover</span>
-          </span>
-        </Link>
+      <header className="fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-[#42433D] bg-[#0E100F]/95 px-4 backdrop-blur sm:px-6 lg:hidden">
+        <Brand />
         <button
+          ref={menuButtonRef}
           type="button"
           onClick={() => setMobileOpen(true)}
-          className="rounded-[6px] border border-border-default p-2 text-text-secondary transition hover:border-gold hover:text-gold"
+          className={`grid size-11 place-items-center text-[#FFFCE1] transition-colors hover:text-[#ABFF84] motion-reduce:transition-none ${focusStyles}`}
           aria-label="Open navigation menu"
+          aria-expanded={mobileOpen}
+          aria-controls="app-navigation-drawer"
         >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M3 6H17M3 10H17M3 14H17"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
+          <MenuIcon />
         </button>
-      </div>
+      </header>
 
-      {/* ── Mobile drawer overlay ── */}
-      {mobileOpen && (
+      {mobileOpen ? (
         <div className="fixed inset-0 z-50 lg:hidden">
-          {/* backdrop */}
-          <div
-            className="absolute inset-0 bg-[rgba(8,10,12,0.86)] backdrop-blur-sm"
+          <button
+            type="button"
+            className="absolute inset-0 cursor-default bg-black/70 backdrop-blur-sm"
             onClick={closeMobile}
-            aria-hidden="true"
+            aria-label="Close navigation menu"
           />
-          {/* drawer */}
-          <aside className="absolute inset-y-0 left-0 flex w-72 flex-col border-r border-border-subtle bg-deep">
-            <div className="flex h-16 items-center justify-between border-b border-border-subtle px-5">
-              <Link
-                href="/"
-                onClick={closeMobile}
-                className="font-display text-lg font-bold text-gold"
-              >
-                Vault<span className="text-text-secondary">Cover</span>
-              </Link>
+          <aside
+            ref={drawerRef}
+            id="app-navigation-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={drawerTitleId}
+            className="absolute inset-y-0 right-0 flex w-[min(88vw,22rem)] flex-col border-l border-[#42433D] bg-[#0E100F] shadow-[0_16px_48px_rgba(0,0,0,0.5)]"
+          >
+            <div className="flex h-16 shrink-0 items-center justify-between border-b border-[#42433D] px-5">
+              <span id={drawerTitleId}>
+                <Brand onClick={closeMobile} />
+              </span>
               <button
                 type="button"
                 onClick={closeMobile}
-                className="rounded-[6px] border border-border-subtle p-1.5 text-text-muted transition hover:border-gold hover:text-gold"
+                className={`grid size-11 place-items-center text-[#BBBAA6] transition-colors hover:text-[#00BAE2] motion-reduce:transition-none ${focusStyles}`}
                 aria-label="Close navigation menu"
               >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 18 18"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M4 4L14 14M14 4L4 14"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  />
-                </svg>
+                <CloseIcon />
               </button>
             </div>
 
-            <nav className="flex-1 overflow-y-auto px-5 py-6" aria-label="Mobile navigation">
-              <ul className="space-y-1" role="list">
-                <li>
-                  <Link
-                    href="/"
-                    onClick={closeMobile}
-                    className="flex items-center gap-1.5 rounded-[6px] px-4 py-2.5 text-sm font-medium text-text-muted transition hover:bg-[rgba(230,192,138,0.06)] hover:text-gold"
-                  >
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M11 4L7 8L11 12"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M7 4H5V12H7"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    Back to Site
-                  </Link>
-                </li>
-              </ul>
-              <div className="my-4 border-t border-border-subtle" />
-              <NavItems onClick={closeMobile} />
+            <div className="px-5 pt-5">
+              <WorkspaceContext />
+            </div>
+
+            <nav className="flex-1 overflow-y-auto px-5 py-6" aria-label="Mobile VaultCover workspace">
+              <p className="mb-3 px-4 text-xs text-[#7C7C6F]">Workspace</p>
+              <NavItems pathname={pathname} onClick={closeMobile} />
+              <Link
+                href="/"
+                onClick={closeMobile}
+                className={`mt-6 flex min-h-11 items-center gap-2 border-t border-[#42433D] px-4 pt-5 text-xs text-[#7C7C6F] hover:text-[#00BAE2] ${focusStyles}`}
+              >
+                <ArrowLeftIcon className="size-4" />
+                Back to public site
+              </Link>
             </nav>
 
-            <div className="border-t border-border-subtle px-5 py-4">
-              <ConnectWallet />
-              <p className="mt-3 flex items-center gap-2 text-xs text-text-muted">
-                <span className="h-2 w-2 rounded-full bg-safe" />
-                Casper Testnet
-              </p>
-            </div>
+            <WalletArea />
           </aside>
         </div>
-      )}
+      ) : null}
     </>
   );
 }

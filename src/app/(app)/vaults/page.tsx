@@ -1,185 +1,124 @@
-import { VAULTS } from "@/lib/mock-data";
-import { VaultCard } from "@/components/VaultCard";
-import { SectionHeader } from "@/components/SectionHeader";
-import { DemoModeBadge } from "@/components/DemoModeBadge";
 import { ContractStatusPanel } from "@/components/ContractStatusPanel";
+import {
+  ProtectionFlow,
+  ProtectionSteps,
+  VaultSummary,
+} from "@/components/app-pages/vaults/VaultsOverview";
+import { VaultExplorerCard } from "@/components/app-pages/vaults/VaultExplorerCard";
+import { VAULTS } from "@/lib/mock-data";
 
 export default function VaultsPage() {
-  const totalTVL = VAULTS.reduce((sum, v) => sum + v.tvl, 0);
+  const totalTVL = VAULTS.reduce((sum, vault) => sum + vault.tvl, 0);
   const avgRiskScore = Math.round(
-    VAULTS.reduce((sum, v) => sum + v.riskScore, 0) / VAULTS.length
+    VAULTS.reduce((sum, vault) => sum + vault.riskScore, 0) / VAULTS.length,
   );
 
   return (
-    <div className="mx-auto max-w-[1280px]">
-      <div className="mb-8 flex items-center gap-4">
-        <SectionHeader
-          eyebrow="Vault Explorer"
-          title="Parametric Cover Available"
-          body="Select a vault to view risk metrics, supported triggers, and buy cover."
+    <div className="mx-auto min-w-0 max-w-[1280px] overflow-x-hidden [font-family:Mori,var(--font-geist-sans),-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif] text-[#FFFCE1]">
+      <header
+        aria-labelledby="vaults-title"
+        className="relative isolate overflow-hidden border-b border-[#42433D] pb-10 sm:pb-12"
+      >
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(rgba(255,252,225,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,252,225,0.035)_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:linear-gradient(to_bottom,black,transparent_90%)]"
         />
-        <div className="shrink-0 self-start pt-2">
-          <DemoModeBadge />
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <p className="flex items-center gap-3 text-xs text-[#BBBAA6]">
+            <span className="h-px w-8 bg-[#ABFF84]" aria-hidden="true" />
+            Vault explorer / Casper Testnet
+          </p>
+          <span className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#42433D] px-4 text-[11px] font-semibold text-[#BBBAA6]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#00BAE2]" aria-hidden="true" />
+            Demo mode
+          </span>
         </div>
-      </div>
 
-      {/* Demo TVL Summary */}
-      <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <div className="rounded-xl border border-border-subtle bg-surface p-4 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-text-muted">Total Demo TVL</p>
-          <p className="mt-1 font-mono text-xl font-bold text-text-primary">{totalTVL} CSPR</p>
-        </div>
-        <div className="rounded-xl border border-border-subtle bg-surface p-4 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-text-muted">Avg Risk Score</p>
-          <p className="mt-1 font-mono text-xl font-bold text-text-primary">{avgRiskScore}/100</p>
-        </div>
-        <div className="rounded-xl border border-border-subtle bg-surface p-4 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-text-muted">Active Vaults</p>
-          <p className="mt-1 font-mono text-xl font-bold text-text-primary">{VAULTS.length}</p>
-        </div>
-        <div className="rounded-xl border border-border-subtle bg-surface p-4 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-text-muted">Network</p>
-          <p className="mt-1 font-mono text-lg font-bold text-text-primary">Casper Testnet</p>
-        </div>
-      </div>
+        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,0.55fr)] lg:items-end">
+          <div>
+            <h1
+              id="vaults-title"
+              className="max-w-4xl break-words text-[clamp(2.4rem,7vw,6.5rem)] font-normal leading-[0.9]"
+            >
+              Compare the risk.
+              <span className="block text-[#ABFF84]">Then consider the yield.</span>
+            </h1>
+            <p className="mt-6 max-w-2xl text-sm leading-7 text-[#BBBAA6] sm:text-base">
+              Select a vault to inspect its health, supported triggers, and
+              available parametric cover before you deposit.
+            </p>
+          </div>
 
-      {/* Product clarity section */}
-      <div className="mb-12 rounded-2xl border border-border-default bg-surface p-6 lg:p-8">
-        <h2 className="font-display text-2xl font-bold text-gold">
-          What are these vaults?
-        </h2>
-        <p className="mt-3 max-w-3xl leading-7 text-text-secondary">
-          These are Casper Testnet demo vaults used to show how VaultCover
-          protects users from measurable vault risk. The vaults represent yield
-          products a user might deposit into, while VaultCover sits on top as a
-          parametric cover layer.
-        </p>
-
-        {/* Flow diagram */}
-        <div className="mt-8 overflow-x-auto">
-          <div className="flex min-w-[640px] items-center gap-3">
-            <FlowStep label="Vault" detail="Yield product" />
-            <FlowArrow />
-            <FlowStep label="Cover Policy" detail="Parametric cover" />
-            <FlowArrow />
-            <FlowStep label="AI Risk Agent" detail="Monitor triggers" />
-            <FlowArrow />
-            <FlowStep label="Claim Signal" detail="Trigger fired" />
-            <FlowArrow />
-            <FlowStep label="Cover Receipt" detail="Recorded on-chain" />
+          <div className="border-l border-[#42433D] pl-5 sm:pl-6">
+            <p className="text-[10px] text-[#7C7C6F]">PORTFOLIO RISK SIGNAL</p>
+            <div className="mt-3 flex items-baseline gap-3">
+              <span className="text-5xl font-normal text-[#FFFCE1]">
+                {avgRiskScore}
+              </span>
+              <span className="text-sm text-[#BBBAA6]">/ 100 average</span>
+            </div>
+            <div
+              className="mt-5 h-1 overflow-hidden bg-[#42433D]"
+              role="progressbar"
+              aria-label="Average vault risk score"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={avgRiskScore}
+              aria-valuetext={`${avgRiskScore} out of 100 average risk`}
+            >
+              <div
+                className="h-full bg-[#00BAE2]"
+                style={{ width: `${avgRiskScore}%` }}
+              />
+            </div>
+            <p className="mt-3 text-xs leading-5 text-[#7C7C6F]">
+              Risk scores combine vault health, liquidity, strategy behavior,
+              and trigger conditions.
+            </p>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Vault cards grid */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        {VAULTS.map((vault) => (
-          <VaultCard
-            key={vault.id}
-            vault={vault}
-            href={`/vaults/${vault.id}`}
-          />
-        ))}
-      </div>
-
-      {/* How protection works */}
-      <div className="mt-16 border-t border-border-subtle pt-12">
-        <h2 className="font-display text-2xl font-bold text-gold">
-          How protection works
-        </h2>
-        <p className="mt-3 max-w-2xl leading-7 text-text-secondary">
-          VaultCover provides AI-monitored parametric cover for on-chain vaults.
-          Here is how the protection flow works, step by step.
-        </p>
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <HowStep
-            step="1"
-            title="Select a vault"
-            body="Browse available vaults and choose one that matches your risk profile and yield expectations."
-          />
-          <HowStep
-            step="2"
-            title="Buy cover against specific triggers"
-            body="Choose which risk triggers you want parametric cover for. Premium is 1.5% of the cover amount."
-          />
-          <HowStep
-            step="3"
-            title="AI Risk Agent monitors vault health"
-            body="The AI Risk Agent continuously scores vault health, tracking TVL, APY, oracle feeds, and other metrics."
-          />
-          <HowStep
-            step="4"
-            title="Claim signal generated if trigger breached"
-            body="When a covered trigger condition is met, the AI Risk Agent generates a claim signal with confidence score."
-          />
-          <HowStep
-            step="5"
-            title="Casper records the protection trail"
-            body="The policy, risk event, claim signal, and cover receipt are all recorded immutably on Casper."
-          />
-          <HowStep
-            step="6"
-            title="Cover Receipt issued"
-            body="You receive a verifiable cover receipt with payout simulation details and transaction hashes."
-          />
-        </div>
-      </div>
-
-      {/* Contract Status Panel */}
-      <ContractStatusPanel />
-    </div>
-  );
-}
-
-/* ── Sub-components ── */
-
-function FlowStep({ label, detail }: { label: string; detail: string }) {
-  return (
-    <div className="flex shrink-0 flex-col items-center rounded-xl border border-border-subtle bg-raised px-5 py-4 text-center">
-      <span className="font-display text-base font-bold text-gold">{label}</span>
-      <span className="mt-1 text-xs text-text-muted">{detail}</span>
-    </div>
-  );
-}
-
-function FlowArrow() {
-  return (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="shrink-0 text-text-muted"
-      aria-hidden="true"
-    >
-      <path
-        d="M5 12H19M19 12L14 7M19 12L14 17"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+      <VaultSummary
+        totalTVL={totalTVL}
+        averageRisk={avgRiskScore}
+        activeVaults={VAULTS.length}
       />
-    </svg>
-  );
-}
 
-function HowStep({
-  step,
-  title,
-  body,
-}: {
-  step: string;
-  title: string;
-  body: string;
-}) {
-  return (
-    <div className="rounded-xl border border-border-subtle bg-surface p-5">
-      <span className="inline-flex h-8 w-8 items-center justify-center rounded-[4px] border border-[rgba(230,192,138,0.24)] bg-[rgba(230,192,138,0.08)] font-mono text-sm font-bold text-gold">
-        {step}
-      </span>
-      <h3 className="mt-4 font-semibold text-text-primary">{title}</h3>
-      <p className="mt-2 text-sm leading-6 text-text-muted">{body}</p>
+      <section aria-labelledby="available-vaults-title" className="py-12 sm:py-14">
+        <div className="mb-8 grid gap-5 border-t border-[#42433D] pt-5 md:grid-cols-[0.7fr_1.5fr]">
+          <p className="text-xs text-[#ABFF84]">AVAILABLE COVER</p>
+          <div>
+            <h2
+              id="available-vaults-title"
+              className="max-w-3xl text-[clamp(2rem,5vw,4rem)] font-normal leading-[0.95]"
+            >
+              Read the danger conditions first.
+            </h2>
+            <p className="mt-5 max-w-2xl text-sm leading-7 text-[#BBBAA6] sm:text-base">
+              Each vault exposes its risk score, active state, cover triggers,
+              liquidity, policies, and APY in that order.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          {VAULTS.map((vault) => (
+            <VaultExplorerCard
+              key={vault.id}
+              vault={vault}
+              href={`/vaults/${vault.id}`}
+            />
+          ))}
+        </div>
+      </section>
+
+      <ProtectionFlow />
+      <ProtectionSteps />
+
+      <div className="[&_.font-display]:font-normal [&_.text-gold]:text-[#ABFF84] [&_.bg-surface]:bg-[#0E100F] [&_.bg-surface-elevated]:bg-[#191919] [&_.border-border-default]:border-[#42433D] [&_.border-border-subtle]:border-[#42433D] [&_.text-text-primary]:text-[#FFFCE1] [&_.text-text-secondary]:text-[#BBBAA6] [&_.text-text-muted]:text-[#7C7C6F] [&_.rounded-2xl]:rounded-lg">
+        <ContractStatusPanel />
+      </div>
     </div>
   );
 }
