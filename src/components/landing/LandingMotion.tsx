@@ -38,7 +38,7 @@ export function LandingMotion({ children }: LandingMotionProps) {
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
-    const sectionById = new Map(
+    const sectionById = new Map<string, HTMLElement | null>(
       trackedSections.map((sectionId) => [
         sectionId,
         document.getElementById(sectionId),
@@ -325,32 +325,6 @@ export function LandingMotion({ children }: LandingMotionProps) {
       <LandingNav
         activeId={activeSectionId}
         reducedMotion={reducedMotion}
-        onNavigate={(hash) => {
-          const scrollToHash = (window as typeof window & {
-            __landingScrollTo?: (hash: string) => void;
-          }).__landingScrollTo;
-
-          if (scrollToHash) {
-            scrollToHash(hash);
-            setActiveSectionId(hash.replace("#", ""));
-            return;
-          }
-
-          const target = document.querySelector<HTMLElement>(hash);
-
-          if (!target) {
-            return;
-          }
-
-          const targetTop =
-            window.scrollY + target.getBoundingClientRect().top - NAV_OFFSET;
-
-          window.scrollTo({
-            top: targetTop,
-            behavior: reducedMotion ? "auto" : "smooth",
-          });
-          window.history.pushState(null, "", hash);
-        }}
       />
       {children}
     </main>

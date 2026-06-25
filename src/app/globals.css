@@ -1,30 +1,30 @@
 @import "tailwindcss";
 
 :root {
-  --background: #080a0c;
-  --foreground: #ead7b6;
+  --background: #0E100F;
+  --foreground: #FFFCE1;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-obsidian: #080A0C;
-  --color-gold: #E6C08A;
-  --color-surface: #0D1013;
-  --color-raised: #12161A;
-  --color-elevated: #171C21;
-  --color-deep: #050607;
-  --color-text-primary: #F4E7CF;
-  --color-text-secondary: #C8B28C;
-  --color-text-muted: #8D7A5D;
-  --color-safe: #76D99C;
-  --color-warning: #E6C08A;
-  --color-danger: #D66A5E;
-  --color-info: #9FB7C7;
-  --color-border-subtle: rgba(230, 192, 138, 0.10);
-  --color-border-default: rgba(230, 192, 138, 0.24);
-  --color-border-strong: rgba(230, 192, 138, 0.45);
-  --color-border-divider: rgba(230, 192, 138, 0.12);
+  --color-obsidian: #0E100F;
+  --color-gold: #ABFF84;
+  --color-surface: #0E100F;
+  --color-raised: #191919;
+  --color-elevated: #191919;
+  --color-deep: #000000;
+  --color-text-primary: #FFFCE1;
+  --color-text-secondary: #BBBAA6;
+  --color-text-muted: #7C7C6F;
+  --color-safe: #0AE448;
+  --color-warning: #F7BDF8;
+  --color-danger: #F7BDF8;
+  --color-info: #00BAE2;
+  --color-border-subtle: #42433D;
+  --color-border-default: #42433D;
+  --color-border-strong: rgba(255, 252, 225, 0.45);
+  --color-border-divider: #42433D;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -32,7 +32,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Georama, Satoshi, Arial, Helvetica, sans-serif;
+  font-family: Mori, var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
 }
 
@@ -41,8 +41,8 @@ html {
 }
 
 .font-display {
-  font-family: "Agency FB", "Arial Narrow", var(--font-geist-sans), Arial, sans-serif;
-  letter-spacing: 0.01em;
+  font-family: Mori, var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

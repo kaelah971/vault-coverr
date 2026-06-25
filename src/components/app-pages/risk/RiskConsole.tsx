@@ -7,6 +7,13 @@ type RiskTone = {
   label: string;
 };
 
+const panel =
+  "rounded-lg border border-[#42433D] bg-[#0E100F]/80 shadow-[0_4px_16px_rgba(0,0,0,0.3)]";
+const hoverPanel =
+  "transition duration-300 hover:border-[#BBBAA6]/45 hover:bg-[#FFFCE1]/[0.025] motion-reduce:transition-none";
+const pillCta =
+  "inline-flex min-h-11 items-center justify-center rounded-full border-2 px-5 py-3 text-[11px] font-semibold leading-none transition duration-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#00BAE2] motion-reduce:transition-none";
+
 const riskTone = (score: number): RiskTone => {
   if (score <= 30) {
     return {
@@ -42,34 +49,40 @@ export function RiskConsoleHeader({
 
   return (
     <header aria-labelledby="risk-console-title">
-      <div className="flex flex-col gap-8 border-b border-[#42433D] pb-8 lg:flex-row lg:items-end lg:justify-between">
-        <div className="min-w-0 max-w-3xl">
-          <p className="flex items-center gap-3 text-xs text-[#ABFF84]">
-            <span className="h-px w-8 bg-[#ABFF84]" aria-hidden="true" />
-            AI RISK MONITOR / CASPER TESTNET
-          </p>
-          <h1
-            id="risk-console-title"
-            className="mt-5 max-w-full break-words text-[clamp(2.25rem,6vw,5.5rem)] font-normal leading-[0.92]"
-          >
-            Monitor the threshold.
-            <span className="block text-[#BBBAA6]">Inspect the evidence.</span>
-          </h1>
-          <p className="mt-6 max-w-2xl text-sm leading-7 text-[#BBBAA6] sm:text-base">
-            Live vault health, deterministic trigger conditions, and
-            agent-generated claim evidence in one risk-first view.
-          </p>
-        </div>
+      <div className="relative isolate overflow-hidden border-b border-[#42433D] pb-8">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_12%_8%,rgba(171,255,132,0.14),transparent_30%),radial-gradient(circle_at_85%_18%,rgba(0,186,226,0.12),transparent_28%),linear-gradient(rgba(255,252,225,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,252,225,0.025)_1px,transparent_1px)] bg-[size:auto,auto,48px_48px,48px_48px] [mask-image:linear-gradient(to_bottom,black,transparent_92%)]"
+        />
+        <div className="flex flex-col gap-8 pt-2 lg:flex-row lg:items-end lg:justify-between">
+          <div className="min-w-0 max-w-3xl">
+            <p className="flex items-center gap-3 text-xs text-[#BBBAA6]">
+              <span className="h-px w-8 bg-[#ABFF84]" aria-hidden="true" />
+              AI RISK MONITOR / CASPER TESTNET
+            </p>
+            <h1
+              id="risk-console-title"
+              className="mt-5 max-w-full break-words text-[clamp(2.25rem,6vw,5.5rem)] font-normal leading-[0.92]"
+            >
+              Monitor the threshold.
+              <span className="block text-[#ABFF84]">Inspect the evidence.</span>
+            </h1>
+            <p className="mt-6 max-w-2xl text-sm leading-7 text-[#BBBAA6] sm:text-base">
+              Live vault health, deterministic trigger conditions, and
+              agent-generated claim evidence in one risk-first view.
+            </p>
+          </div>
 
-        <dl className="grid min-w-0 grid-cols-3 border-y border-[#42433D] py-4 lg:min-w-[360px]">
-          <HeaderMetric label="Vaults" value={String(monitoredVaults)} />
-          <HeaderMetric label="Elevated" value={String(elevatedVaults)} />
-          <HeaderMetric
-            label="Agent"
-            value={activeSignal ? "Signal" : "Standby"}
-            accent={activeSignal ? "#ABFF84" : undefined}
-          />
-        </dl>
+          <dl className={`${panel} grid min-w-0 grid-cols-3 px-4 py-4 lg:min-w-[360px]`}>
+            <HeaderMetric label="Vaults" value={String(monitoredVaults)} />
+            <HeaderMetric label="Elevated" value={String(elevatedVaults)} />
+            <HeaderMetric
+              label="Agent"
+              value={activeSignal ? "Signal" : "Standby"}
+              accent={activeSignal ? "#ABFF84" : undefined}
+            />
+          </dl>
+        </div>
       </div>
     </header>
   );
@@ -99,20 +112,20 @@ export function RiskFleet({ vaults }: { vaults: Vault[] }) {
 
   return (
     <section aria-labelledby="fleet-title">
-      <div className="mb-4 grid gap-3 border-t border-[#42433D] pt-4 md:grid-cols-[1fr_2fr]">
+      <div className="mb-6 grid gap-5 border-t border-[#42433D] pt-5 md:grid-cols-[1fr_2fr]">
         <p className="text-xs text-[#00BAE2]">01 / VAULT HEALTH</p>
         <div>
-          <h2 id="fleet-title" className="text-2xl font-normal">
+          <h2 id="fleet-title" className="text-[clamp(2rem,5vw,3.5rem)] font-normal leading-[0.95]">
             Risk queue
           </h2>
-          <p className="mt-2 text-sm leading-6 text-[#7C7C6F]">
+          <p className="mt-4 max-w-xl text-sm leading-7 text-[#BBBAA6]">
             Highest exposure appears first. Scores map to low, medium, and high
             operating thresholds.
           </p>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-lg border border-[#42433D]">
+      <div className={`${panel} overflow-hidden`}>
         <div
           className="hidden grid-cols-[minmax(0,1.4fr)_100px_minmax(180px,0.8fr)_120px] gap-6 border-b border-[#42433D] bg-black/20 px-6 py-3 text-[10px] text-[#7C7C6F] md:grid"
           aria-hidden="true"
@@ -135,7 +148,7 @@ function VaultRiskRow({ vault }: { vault: Vault }) {
   const tone = riskTone(vault.riskScore);
 
   return (
-    <article className="grid gap-5 border-b border-[#42433D] p-5 last:border-b-0 md:grid-cols-[minmax(0,1.4fr)_100px_minmax(180px,0.8fr)_120px] md:items-center md:gap-6 md:px-6">
+    <article className={`group grid gap-5 border-b border-[#42433D] p-5 last:border-b-0 md:grid-cols-[minmax(0,1.4fr)_100px_minmax(180px,0.8fr)_120px] md:items-center md:gap-6 md:px-6 ${hoverPanel}`}>
       <div className="min-w-0">
         <div className="flex items-center gap-3">
           <span
@@ -150,7 +163,7 @@ function VaultRiskRow({ vault }: { vault: Vault }) {
 
       <div className="flex items-baseline justify-between md:block">
         <span className="text-[10px] text-[#7C7C6F] md:hidden">RISK SCORE</span>
-        <span className="font-mono text-2xl" style={{ color: tone.accent }}>
+        <span className="font-mono text-2xl transition-colors duration-300 group-hover:text-[#FFFCE1] motion-reduce:transition-none" style={{ color: tone.accent }}>
           {vault.riskScore}
           <span className="text-xs text-[#7C7C6F]"> / 100</span>
         </span>
@@ -174,7 +187,7 @@ function VaultRiskRow({ vault }: { vault: Vault }) {
           aria-valuetext={`${vault.riskScore} out of 100, ${tone.label} risk`}
         >
           <div
-            className="h-full rounded-full"
+            className="h-full rounded-full transition-[width,filter] duration-500 group-hover:brightness-125 motion-reduce:transition-none"
             style={{
               width: `${Math.min(Math.max(vault.riskScore, 0), 100)}%`,
               backgroundColor: tone.accent,
@@ -187,9 +200,9 @@ function VaultRiskRow({ vault }: { vault: Vault }) {
 
       <Link
         href={`/vaults/${vault.id}`}
-        className={`inline-flex min-h-11 items-center justify-between border-b py-3 text-sm text-[#FFFCE1] transition hover:text-[#ABFF84] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#00BAE2] motion-reduce:transition-none ${tone.border}`}
+        className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-full border px-4 py-3 text-[11px] font-semibold text-[#FFFCE1] transition duration-300 hover:border-[#ABFF84] hover:bg-[#ABFF84]/10 hover:text-[#ABFF84] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#00BAE2] motion-reduce:transition-none ${tone.border}`}
       >
-        View vault <span aria-hidden="true">↗</span>
+        View vault <span aria-hidden="true">-&gt;</span>
       </Link>
     </article>
   );
@@ -204,14 +217,14 @@ export function SimulationPanel({
 }) {
   return (
     <section aria-labelledby="simulation-title">
-      <div className="mb-4 border-t border-[#42433D] pt-4">
+      <div className="mb-6 border-t border-[#42433D] pt-5">
         <p className="text-xs text-[#ABFF84]">DEMO CONTROL</p>
-        <h2 id="simulation-title" className="mt-2 text-2xl font-normal">
+        <h2 id="simulation-title" className="mt-2 text-[clamp(2rem,5vw,3.5rem)] font-normal leading-[0.95]">
           Simulate detection
         </h2>
       </div>
 
-      <div className="rounded-lg border border-[#42433D] bg-[#ABFF84]/[0.035] p-6 shadow-[0_4px_16px_rgba(0,0,0,0.3)]">
+      <div className={`${panel} ${hoverPanel} bg-[#ABFF84]/[0.035] p-6`}>
         <div className="flex items-center justify-between gap-4 border-b border-[#42433D] pb-4">
           <span className="text-xs text-[#BBBAA6]">RWA Invoice Vault</span>
           <span className="inline-flex items-center gap-2 text-xs text-[#00BAE2]">
@@ -234,7 +247,7 @@ export function SimulationPanel({
         <button
           type="button"
           onClick={onTrigger}
-          className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-full border-2 border-[#FFFCE1] px-6 py-3 text-[11px] font-semibold leading-none text-[#FFFCE1] transition hover:border-[#ABFF84] hover:bg-[#ABFF84]/10 hover:text-[#ABFF84] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#00BAE2] motion-reduce:transition-none"
+          className={`${pillCta} mt-6 w-full border-[#FFFCE1] text-[#FFFCE1] hover:border-[#ABFF84] hover:bg-[#ABFF84]/10 hover:text-[#ABFF84]`}
         >
           {hasTriggered ? "Run detection again" : "Trigger demo risk event"}
         </button>
@@ -284,7 +297,7 @@ export function SignalEvidence({
   );
 
   return (
-    <div className="overflow-hidden rounded-lg border border-[#42433D] bg-black shadow-[0_16px_48px_rgba(0,0,0,0.45)]">
+    <div className="overflow-hidden rounded-lg border border-[#42433D] bg-black shadow-[0_16px_48px_rgba(0,0,0,0.45)] transition duration-300 hover:border-[#BBBAA6]/45 motion-reduce:transition-none">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#42433D] px-5 py-4">
         <span className="font-mono text-xs text-[#7C7C6F]">
           {signal.vaultId}
@@ -354,13 +367,13 @@ export function SignalEvidence({
       {signal.triggered ? (
         <div className="flex flex-col gap-4 border-t border-[#ABFF84]/25 bg-[#ABFF84]/[0.05] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-[#ABFF84]">
-            Claim signal generated · Casper event recorded
+            Claim signal generated / Casper event recorded
           </p>
           <Link
             href={claimHref}
-            className="inline-flex min-h-11 items-center gap-3 border-b border-[#00BAE2] py-3 text-sm text-[#FFFCE1] transition hover:text-[#00BAE2] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#00BAE2] motion-reduce:transition-none"
+            className={`${pillCta} border-[#42433D] text-[#FFFCE1] hover:border-[#00BAE2] hover:bg-[#00BAE2]/10 hover:text-[#00BAE2]`}
           >
-            {claimLabel} <span aria-hidden="true">↗</span>
+            {claimLabel} <span aria-hidden="true">-&gt;</span>
           </Link>
         </div>
       ) : null}
@@ -378,7 +391,7 @@ function EvidenceMetric({
   color: string;
 }) {
   return (
-    <div className="rounded-lg border border-[#42433D] p-4">
+    <div className={`${panel} p-4`}>
       <span className="block text-[10px] text-[#7C7C6F]">{label}</span>
       <strong
         className="mt-2 block font-mono text-xl font-normal"

@@ -14,6 +14,8 @@ import {
 } from "@/lib/demo-state";
 
 const EMPTY_POLICIES: never[] = [];
+const pillButton =
+  "inline-flex min-h-11 items-center justify-center rounded-full border-2 px-4 text-[11px] font-semibold leading-none transition duration-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#00BAE2] motion-reduce:transition-none";
 
 function formatUSD(amount: number) {
   return `$${(amount / 1000).toFixed(amount >= 1000 ? 1 : 0)}${
@@ -64,9 +66,9 @@ export default function PoliciesPage() {
 
         <section
           aria-labelledby="policy-summary-title"
-          className="mt-8 border-y border-[#42433D]"
+          className="mt-8 overflow-hidden rounded-lg border border-[#42433D] bg-[#0E100F] shadow-[0_4px_16px_rgba(0,0,0,0.24)]"
         >
-          <div className="flex flex-col gap-5 py-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-5 p-5 lg:flex-row lg:items-center lg:justify-between lg:p-6">
             <div>
               <div className="flex flex-wrap items-center gap-3">
                 <h2 id="policy-summary-title" className="text-sm text-[#FFFCE1]">
@@ -86,7 +88,7 @@ export default function PoliciesPage() {
               </p>
               {policies.length > 0 && (
                 <p className="mt-2 text-xs text-[#7C7C6F]">
-                  {walletLinkedCount} wallet-linked · {legacyCount} legacy
+                  {walletLinkedCount} wallet-linked / {legacyCount} legacy
                 </p>
               )}
             </div>
@@ -98,10 +100,10 @@ export default function PoliciesPage() {
                     type="button"
                     onClick={() => setShowOnlyMine((value) => !value)}
                     aria-pressed={showOnlyMine}
-                    className={`inline-flex min-h-11 items-center gap-2 rounded-full border-2 px-4 text-[11px] font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#00BAE2] ${
+                    className={`${pillButton} gap-2 ${
                       showOnlyMine
-                        ? "border-[#ABFF84]/60 bg-[#ABFF84]/[0.06] text-[#ABFF84]"
-                        : "border-[#42433D] text-[#BBBAA6] hover:border-[#00BAE2] hover:text-[#FFFCE1]"
+                        ? "border-[#ABFF84]/60 bg-[#ABFF84]/[0.06] text-[#ABFF84] hover:border-[#ABFF84]"
+                        : "border-[#42433D] text-[#BBBAA6] hover:border-[#00BAE2] hover:bg-[#00BAE2]/10 hover:text-[#FFFCE1]"
                     }`}
                   >
                     <span
@@ -118,17 +120,21 @@ export default function PoliciesPage() {
                 <button
                   type="button"
                   onClick={() => setShowClearConfirm(true)}
-                  className="inline-flex min-h-11 items-center rounded-full border-2 border-[#42433D] px-4 text-[11px] font-semibold text-[#7C7C6F] transition-colors hover:border-[#D66A5E]/60 hover:text-[#D66A5E] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#00BAE2]"
+                  className={`${pillButton} border-[#42433D] text-[#7C7C6F] hover:border-[#F7BDF8]/70 hover:bg-[#F7BDF8]/10 hover:text-[#F7BDF8]`}
                 >
                   Clear demo policies
                 </button>
               </div>
             )}
           </div>
+          <div
+            className="h-px bg-[linear-gradient(90deg,#ABFF84,#00BAE2,#F7BDF8,transparent)]"
+            aria-hidden="true"
+          />
         </section>
 
         {policies.length === 0 ? (
-          <section className="mt-8 overflow-hidden rounded-lg border border-[#42433D] bg-[#0E100F]">
+          <section className="mt-8 overflow-hidden rounded-lg border border-[#42433D] bg-[#ABFF84]/[0.025] shadow-[0_4px_16px_rgba(0,0,0,0.24)]">
             <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[1fr_auto] lg:items-end lg:p-10">
               <div>
                 <p className="text-xs text-[#00BAE2]">POLICY TRAIL / EMPTY</p>
@@ -141,13 +147,13 @@ export default function PoliciesPage() {
               </div>
               <Link
                 href="/vaults"
-                className="inline-flex min-h-11 items-center justify-center rounded-full border-2 border-[#FFFCE1] px-6 text-[11px] font-semibold text-[#FFFCE1] transition-colors hover:border-[#ABFF84] hover:bg-[#ABFF84]/10 hover:text-[#ABFF84] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#00BAE2]"
+                className={`${pillButton} border-[#FFFCE1] px-6 py-3 text-[#FFFCE1] hover:border-[#ABFF84] hover:bg-[#ABFF84]/10 hover:text-[#ABFF84]`}
               >
-                Browse vaults <span className="ml-2" aria-hidden="true">→</span>
+                Browse vaults <span className="ml-2" aria-hidden="true">-&gt;</span>
               </Link>
             </div>
             <div
-              className="h-1 bg-[linear-gradient(90deg,#ABFF84_0_25%,#00BAE2_25%_50%,#42433D_50%_100%)]"
+              className="h-1 bg-[linear-gradient(90deg,#ABFF84_0_25%,#00BAE2_25%_50%,#F7BDF8_50%_65%,#42433D_65%_100%)]"
               aria-hidden="true"
             />
           </section>
@@ -159,7 +165,7 @@ export default function PoliciesPage() {
               before full contract write integration.
             </p>
 
-            <dl className="mt-8 grid overflow-hidden rounded-lg border border-[#42433D] sm:grid-cols-3">
+            <dl className="mt-8 grid overflow-hidden rounded-lg border border-[#42433D] bg-[#42433D] shadow-[0_4px_16px_rgba(0,0,0,0.24)] sm:grid-cols-3">
               <SummaryMetric label="Active policies" value={activePolicies.length} />
               <SummaryMetric label="Total cover" value={formatUSD(totalCover)} />
               <SummaryMetric
@@ -169,7 +175,7 @@ export default function PoliciesPage() {
             </dl>
 
             {filteredPolicies.length === 0 ? (
-              <section className="mt-8 rounded-lg border border-[#42433D] p-8 text-center">
+              <section className="mt-8 rounded-lg border border-[#42433D] bg-[#0E100F] p-8 text-center shadow-[0_4px_16px_rgba(0,0,0,0.2)]">
                 <p className="text-sm text-[#BBBAA6]">
                   {showOnlyMine
                     ? "No wallet-linked policies found for your connected wallet."
@@ -209,7 +215,7 @@ function SummaryMetric({
   value: string | number;
 }) {
   return (
-    <div className="border-b border-[#42433D] p-5 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0">
+    <div className="border-b border-[#42433D] bg-[#0E100F] p-5 transition-colors duration-300 last:border-b-0 hover:bg-[#FFFCE1]/[0.035] motion-reduce:transition-none sm:border-b-0 sm:border-r sm:last:border-r-0">
       <dt className="text-[10px] text-[#7C7C6F]">{label}</dt>
       <dd className="mt-2 font-mono text-3xl font-normal text-[#FFFCE1]">
         {value}

@@ -14,27 +14,35 @@ export default function VaultsPage() {
   );
 
   return (
-    <div className="mx-auto min-w-0 max-w-[1280px] overflow-x-hidden [font-family:Mori,var(--font-geist-sans),-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif] text-[#FFFCE1]">
+    <div className="mx-auto min-w-0 max-w-[1280px] overflow-x-hidden bg-[#0E100F] [font-family:Mori,var(--font-geist-sans),-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif] text-[#FFFCE1]">
       <header
         aria-labelledby="vaults-title"
-        className="relative isolate overflow-hidden border-b border-[#42433D] pb-10 sm:pb-12"
+        className="relative isolate overflow-hidden rounded-lg border border-[#42433D] bg-[#0E100F] p-6 shadow-[0_16px_48px_rgba(0,0,0,0.24)] sm:p-8 lg:p-10"
       >
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(rgba(255,252,225,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,252,225,0.035)_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:linear-gradient(to_bottom,black,transparent_90%)]"
+          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_12%_8%,rgba(171,255,132,0.18),transparent_28%),radial-gradient(circle_at_86%_18%,rgba(0,186,226,0.14),transparent_30%),linear-gradient(rgba(255,252,225,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,252,225,0.035)_1px,transparent_1px)] bg-[size:auto,auto,48px_48px,48px_48px] [mask-image:linear-gradient(to_bottom_right,black,transparent_88%)]"
         />
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div
+          aria-hidden="true"
+          className="absolute right-6 top-6 hidden h-28 w-28 rounded-full border border-[#ABFF84]/30 shadow-[0_0_48px_rgba(171,255,132,0.16)] lg:block"
+        >
+          <span className="absolute left-1/2 top-0 h-2 w-2 -translate-x-1/2 rounded-full bg-[#ABFF84] shadow-[0_0_18px_rgba(171,255,132,0.8)]" />
+          <span className="absolute inset-[28%] rounded-full border border-[#00BAE2]/25" />
+        </div>
+
+        <div className="relative flex flex-wrap items-center justify-between gap-4">
           <p className="flex items-center gap-3 text-xs text-[#BBBAA6]">
             <span className="h-px w-8 bg-[#ABFF84]" aria-hidden="true" />
             Vault explorer / Casper Testnet
           </p>
-          <span className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#42433D] px-4 text-[11px] font-semibold text-[#BBBAA6]">
+          <span className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#42433D] bg-[#ABFF84]/[0.035] px-4 text-[11px] font-semibold text-[#BBBAA6] shadow-[0_4px_16px_rgba(0,0,0,0.24)]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#00BAE2]" aria-hidden="true" />
             Demo mode
           </span>
         </div>
 
-        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,0.55fr)] lg:items-end">
+        <div className="relative mt-8 grid gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,0.55fr)] lg:items-end">
           <div>
             <h1
               id="vaults-title"
@@ -49,10 +57,10 @@ export default function VaultsPage() {
             </p>
           </div>
 
-          <div className="border-l border-[#42433D] pl-5 sm:pl-6">
+          <div className="rounded-lg border border-[#42433D] bg-[#0E100F]/70 p-5 shadow-[0_4px_16px_rgba(0,0,0,0.24)] sm:p-6">
             <p className="text-[10px] text-[#7C7C6F]">PORTFOLIO RISK SIGNAL</p>
             <div className="mt-3 flex items-baseline gap-3">
-              <span className="text-5xl font-normal text-[#FFFCE1]">
+              <span className="text-5xl font-normal leading-none text-[#FFFCE1]">
                 {avgRiskScore}
               </span>
               <span className="text-sm text-[#BBBAA6]">/ 100 average</span>
@@ -67,7 +75,7 @@ export default function VaultsPage() {
               aria-valuetext={`${avgRiskScore} out of 100 average risk`}
             >
               <div
-                className="h-full bg-[#00BAE2]"
+                className="h-full bg-[linear-gradient(90deg,#ABFF84,#00BAE2,#F7BDF8)]"
                 style={{ width: `${avgRiskScore}%` }}
               />
             </div>
@@ -116,9 +124,7 @@ export default function VaultsPage() {
       <ProtectionFlow />
       <ProtectionSteps />
 
-      <div className="[&_.font-display]:font-normal [&_.text-gold]:text-[#ABFF84] [&_.bg-surface]:bg-[#0E100F] [&_.bg-surface-elevated]:bg-[#191919] [&_.border-border-default]:border-[#42433D] [&_.border-border-subtle]:border-[#42433D] [&_.text-text-primary]:text-[#FFFCE1] [&_.text-text-secondary]:text-[#BBBAA6] [&_.text-text-muted]:text-[#7C7C6F] [&_.rounded-2xl]:rounded-lg">
-        <ContractStatusPanel />
-      </div>
+      <ContractStatusPanel />
     </div>
   );
 }

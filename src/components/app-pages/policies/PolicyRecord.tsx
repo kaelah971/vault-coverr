@@ -5,6 +5,9 @@ interface PolicyRecordProps {
   onClaim: (policyId: string) => void;
 }
 
+const pillButton =
+  "inline-flex min-h-11 items-center justify-center rounded-full border-2 px-5 text-[11px] font-semibold leading-none transition duration-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#00BAE2] motion-reduce:transition-none";
+
 const statusStyles: Record<
   Policy["status"],
   { label: string; className: string; dot: string }
@@ -60,12 +63,12 @@ function ProofTrail({ status }: { status: Policy["status"] }) {
   return (
     <ol
       aria-label="Policy proof trail"
-      className="grid gap-0 overflow-hidden rounded-lg border border-[#42433D] sm:grid-cols-4"
+      className="grid gap-px overflow-hidden rounded-lg border border-[#42433D] bg-[#42433D] sm:grid-cols-4"
     >
       {steps.map(([label, state], index) => (
         <li
           key={label}
-          className="relative flex min-h-20 items-center gap-3 border-b border-[#42433D] px-4 py-3 last:border-b-0 sm:block sm:border-b-0 sm:border-r sm:last:border-r-0"
+          className="relative flex min-h-20 items-center gap-3 bg-[#0E100F] px-4 py-3 transition-colors duration-300 hover:bg-[#FFFCE1]/[0.025] motion-reduce:transition-none sm:block"
         >
           <span
             className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[9px] ${
@@ -76,7 +79,7 @@ function ProofTrail({ status }: { status: Policy["status"] }) {
                   : "border-[#42433D] text-[#7C7C6F]"
             }`}
           >
-            {state === "complete" ? "✓" : `0${index + 1}`}
+            {state === "complete" ? "OK" : `0${index + 1}`}
           </span>
           <div className="min-w-0 sm:mt-3">
             <span
@@ -108,8 +111,17 @@ export function PolicyRecord({ policy, onClaim }: PolicyRecordProps) {
     policy.signedByWallet === true || Boolean(policy.ownerPublicKey);
 
   return (
-    <article className="overflow-hidden rounded-lg border border-[#42433D] bg-[#0E100F] shadow-[0_4px_16px_rgba(0,0,0,0.24)] transition-colors hover:border-[#BBBAA6]">
-      <div className="grid gap-6 p-5 sm:p-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+    <article className="group relative overflow-hidden rounded-lg border border-[#42433D] bg-[#0E100F] shadow-[0_4px_16px_rgba(0,0,0,0.24)] transition duration-300 hover:-translate-y-0.5 hover:border-[#BBBAA6] motion-reduce:transform-none motion-reduce:transition-none">
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-px origin-left scale-x-0 bg-[linear-gradient(90deg,#ABFF84,#00BAE2,#F7BDF8)] transition-transform duration-300 group-hover:scale-x-100 motion-reduce:transition-none"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_92%_0%,rgba(0,186,226,0.08),transparent_24%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100 motion-reduce:transition-none"
+      />
+
+      <div className="relative grid gap-6 p-5 sm:p-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <span
@@ -118,7 +130,7 @@ export function PolicyRecord({ policy, onClaim }: PolicyRecordProps) {
               <span className={`h-1.5 w-1.5 rounded-full ${status.dot}`} />
               {status.label}
             </span>
-            <span className="inline-flex min-h-7 items-center rounded-full border border-[#42433D] px-3 text-[10px] text-[#BBBAA6]">
+            <span className="inline-flex min-h-7 items-center rounded-full border border-[#42433D] bg-[#0E100F]/70 px-3 text-[10px] text-[#BBBAA6]">
               {isWalletLinked
                 ? "Wallet-linked demo policy"
                 : "Legacy demo policy"}
@@ -148,11 +160,11 @@ export function PolicyRecord({ policy, onClaim }: PolicyRecordProps) {
         </dl>
       </div>
 
-      <div className="border-t border-[#42433D] px-5 py-5 sm:px-6">
+      <div className="relative border-t border-[#42433D] px-5 py-5 sm:px-6">
         <ProofTrail status={policy.status} />
       </div>
 
-      <div className="grid border-t border-[#42433D] lg:grid-cols-[1.15fr_0.85fr]">
+      <div className="relative grid border-t border-[#42433D] lg:grid-cols-[1.15fr_0.85fr]">
         <section
           aria-labelledby={`${policy.id}-coverage`}
           className="border-b border-[#42433D] p-5 sm:p-6 lg:border-b-0 lg:border-r"
@@ -191,7 +203,7 @@ export function PolicyRecord({ policy, onClaim }: PolicyRecordProps) {
               {policy.selectedTriggers.map((trigger) => (
                 <li
                   key={trigger}
-                  className="rounded-full border border-[#42433D] px-3 py-1.5 text-[10px] text-[#BBBAA6]"
+                  className="rounded-full border border-[#42433D] bg-[#0E100F]/70 px-3 py-1.5 text-[10px] text-[#BBBAA6] transition-colors duration-300 group-hover:border-[#BBBAA6]/50 motion-reduce:transition-none"
                 >
                   {trigger}
                 </li>
@@ -236,17 +248,17 @@ export function PolicyRecord({ policy, onClaim }: PolicyRecordProps) {
         </section>
       </div>
 
-      <footer className="flex flex-col gap-3 border-t border-[#42433D] bg-black/15 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+      <footer className="relative flex flex-col gap-3 border-t border-[#42433D] bg-[#FFFCE1]/[0.025] px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <p className="text-xs text-[#7C7C6F]">
-          Local demo record · Casper Testnet proof reference
+          Local demo record / Casper Testnet proof reference
         </p>
         {policy.status === "active" ? (
           <button
             type="button"
             onClick={() => onClaim(policy.id)}
-            className="inline-flex min-h-11 items-center justify-center rounded-full border-2 border-[#FFFCE1] px-5 text-[11px] font-semibold text-[#FFFCE1] transition-colors hover:border-[#ABFF84] hover:bg-[#ABFF84]/10 hover:text-[#ABFF84] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#00BAE2]"
+            className={`${pillButton} border-[#FFFCE1] text-[#FFFCE1] hover:border-[#ABFF84] hover:bg-[#ABFF84]/10 hover:text-[#ABFF84]`}
           >
-            File claim <span className="ml-2" aria-hidden="true">→</span>
+            File claim <span className="ml-2" aria-hidden="true">-&gt;</span>
           </button>
         ) : (
           <span className="text-sm text-[#7C7C6F]">

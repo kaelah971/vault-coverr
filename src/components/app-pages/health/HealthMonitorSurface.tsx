@@ -49,6 +49,8 @@ const dropPercent = (
 
 const panel =
   "rounded-lg border border-[#42433D] bg-[#0E100F]/80 shadow-[0_4px_16px_rgba(0,0,0,0.3)]";
+const hoverPanel =
+  "transition duration-300 hover:border-[#BBBAA6]/45 hover:bg-[#FFFCE1]/[0.025] motion-reduce:transition-none";
 const pillButton =
   "inline-flex min-h-11 items-center justify-center gap-2 rounded-full border-2 px-5 py-3 text-[11px] font-semibold leading-none transition duration-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#00BAE2] motion-reduce:transition-none";
 
@@ -164,7 +166,7 @@ function CopyableHash({ label, hash }: { label: string; hash: string }) {
         <button
           type="button"
           onClick={handleCopy}
-          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[#42433D] text-[#BBBAA6] transition hover:border-[#00BAE2] hover:text-[#00BAE2] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00BAE2] motion-reduce:transition-none"
+          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[#42433D] text-[#BBBAA6] transition duration-300 hover:border-[#00BAE2] hover:bg-[#00BAE2]/10 hover:text-[#00BAE2] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00BAE2] motion-reduce:transition-none"
           aria-label={copied ? `${label} hash copied` : `Copy ${label} hash`}
         >
           {copied ? <CheckCircle className="text-[#0AE448]" /> : <CopyIcon />}
@@ -236,7 +238,7 @@ function SignalNode({
 }) {
   return (
     <article
-      className={`relative rounded-lg border p-4 sm:p-5 ${
+      className={`relative rounded-lg border p-4 shadow-[0_4px_16px_rgba(0,0,0,0.3)] sm:p-5 ${hoverPanel} ${
         active
           ? "border-[#F7BDF8]/45 bg-[#F7BDF8]/[0.045]"
           : "border-[#42433D] bg-[#191919]/55"
@@ -282,7 +284,7 @@ function Metric({
   tone?: "default" | "risk";
 }) {
   return (
-    <div className="border-t border-[#42433D] py-4 first:border-t-0 sm:border-l sm:border-t-0 sm:px-5 sm:py-0 sm:first:border-l-0 sm:first:pl-0">
+    <div className="border-t border-[#42433D] py-4 transition-colors duration-300 first:border-t-0 hover:border-[#BBBAA6]/45 sm:border-l sm:border-t-0 sm:px-5 sm:py-0 sm:first:border-l-0 sm:first:pl-0 motion-reduce:transition-none">
       <dt className="text-[10px] text-[#7C7C6F]">{label}</dt>
       <dd className={`mt-2 font-mono text-xl ${tone === "risk" ? "text-[#F7BDF8]" : "text-[#FFFCE1]"}`}>
         {value}
@@ -336,11 +338,15 @@ export function HealthMonitorSurface() {
   const activeStepText = currentStep >= 0 ? REVEAL_STEPS[currentStep] : "AI watch cycle started";
 
   return (
-    <div className="min-h-screen min-w-0 max-w-full overflow-x-hidden bg-[#0E100F] [font-family:Mori,var(--font-geist-sans),-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif] text-[#FFFCE1]">
-      <div className="mx-auto min-w-0 max-w-7xl">
+    <div className="relative isolate min-h-screen min-w-0 max-w-full overflow-x-hidden bg-[#0E100F] [font-family:Mori,var(--font-geist-sans),-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif] text-[#FFFCE1]">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_15%_5%,rgba(171,255,132,0.12),transparent_28%),radial-gradient(circle_at_88%_12%,rgba(0,186,226,0.12),transparent_30%),radial-gradient(circle_at_80%_72%,rgba(247,189,248,0.08),transparent_28%)]"
+      />
+      <div className="mx-auto min-w-0 max-w-7xl px-4 sm:px-6 lg:px-8">
         <Link
           href="/vaults/rwa-invoice-vault"
-          className="inline-flex min-h-11 items-center gap-2 text-sm text-[#BBBAA6] transition hover:text-[#ABFF84] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#00BAE2] motion-reduce:transition-none"
+          className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#42433D] px-4 text-[11px] font-semibold text-[#BBBAA6] transition duration-300 hover:border-[#ABFF84] hover:bg-[#ABFF84]/10 hover:text-[#ABFF84] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#00BAE2] motion-reduce:transition-none"
         >
           <ChevronLeft />
           Back to RWA Invoice Vault
@@ -349,7 +355,7 @@ export function HealthMonitorSurface() {
         <header className="relative mt-4 overflow-hidden border-y border-[#42433D] py-8 sm:py-10">
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,252,225,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,252,225,0.03)_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:linear-gradient(to_right,black,transparent_80%)]"
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,252,225,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,252,225,0.03)_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:linear-gradient(to_right,black,transparent_82%)]"
           />
           <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.42fr)] lg:items-end">
             <div>
@@ -369,7 +375,7 @@ export function HealthMonitorSurface() {
               </p>
             </div>
 
-            <div className={`${panel} p-5 sm:p-6`}>
+            <div className={`${panel} ${hoverPanel} p-5 sm:p-6`}>
               <div className="flex items-center justify-between gap-4">
                 <p className="text-xs text-[#BBBAA6]">Current risk</p>
                 <span
@@ -411,8 +417,8 @@ export function HealthMonitorSurface() {
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="text-xs text-[#00BAE2]">SIGNAL TIMELINE</p>
-              <h2 id="signal-title" className="mt-2 text-2xl font-normal sm:text-3xl">
-                Protected baseline → observed state
+              <h2 id="signal-title" className="mt-2 text-[clamp(2rem,5vw,3.5rem)] font-normal leading-[0.95]">
+                Protected baseline - observed state
               </h2>
             </div>
             <span
@@ -461,7 +467,7 @@ export function HealthMonitorSurface() {
           </div>
         </section>
 
-        <section className={`${panel} mt-6 p-5 sm:p-6`} aria-labelledby="telemetry-title">
+        <section className={`${panel} ${hoverPanel} mt-6 p-5 sm:p-6`} aria-labelledby="telemetry-title">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 id="telemetry-title" className="text-lg font-normal">
               Live telemetry
@@ -491,7 +497,7 @@ export function HealthMonitorSurface() {
         </section>
 
         <section className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,0.72fr)_minmax(360px,1fr)]">
-          <div className={`${panel} p-5 sm:p-6`}>
+          <div className={`${panel} ${hoverPanel} p-5 sm:p-6`}>
             <p className="text-xs text-[#ABFF84]">COVER CONDITION</p>
             <h2 className="mt-3 text-xl font-normal">TVL_DROP trigger rule</h2>
             <p className="mt-3 text-sm leading-7 text-[#BBBAA6]">
@@ -527,7 +533,7 @@ export function HealthMonitorSurface() {
             </div>
           </div>
 
-          <div className={`${panel} p-5 sm:p-6`}>
+          <div className={`${panel} ${hoverPanel} p-5 sm:p-6`}>
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
                 <p className="text-xs text-[#00BAE2]">AI WATCH CYCLE</p>
@@ -565,7 +571,7 @@ export function HealthMonitorSurface() {
                 return (
                   <li
                     key={step}
-                    className={`grid min-h-11 grid-cols-[24px_minmax(0,1fr)_auto] items-center gap-3 border-t border-[#42433D] py-2 text-sm transition-colors motion-reduce:transition-none ${
+                    className={`grid min-h-11 grid-cols-[24px_minmax(0,1fr)_auto] items-center gap-3 border-t border-[#42433D] py-2 text-sm transition duration-300 hover:border-[#BBBAA6]/45 motion-reduce:transition-none ${
                       revealed || cycleComplete ? "text-[#FFFCE1]" : "text-[#7C7C6F]"
                     }`}
                   >
@@ -593,7 +599,7 @@ export function HealthMonitorSurface() {
           <section className="mt-8 grid gap-6" aria-labelledby="result-title">
             <div className="border-t border-[#F7BDF8]/45 pt-6">
               <p className="text-xs text-[#F7BDF8]">VERIFIED RESULT</p>
-              <h2 id="result-title" className="mt-2 text-3xl font-normal sm:text-4xl">
+              <h2 id="result-title" className="mt-2 text-[clamp(2rem,5vw,4rem)] font-normal leading-[0.98]">
                 The covered condition was breached.
               </h2>
               <p className="mt-3 max-w-3xl text-sm leading-7 text-[#BBBAA6]">
@@ -604,7 +610,7 @@ export function HealthMonitorSurface() {
             </div>
 
             <div className="grid gap-6 lg:grid-cols-2">
-              <div className={`${panel} p-5 sm:p-6`}>
+              <div className={`${panel} ${hoverPanel} p-5 sm:p-6`}>
                 <div className="flex items-center gap-3">
                   <ShieldIcon className="text-[#ABFF84]" />
                   <h3 className="text-lg font-normal">Claim eligibility</h3>
@@ -625,7 +631,7 @@ export function HealthMonitorSurface() {
                 </div>
               </div>
 
-              <div className={`${panel} p-5 sm:p-6`}>
+              <div className={`${panel} ${hoverPanel} p-5 sm:p-6`}>
                 <p className="text-xs text-[#00BAE2]">CASPER TESTNET PROOF TRAIL</p>
                 <div className="mt-3">
                   <CopyableHash label="Policy created" hash={CASPER_PROOF.policy} />
@@ -636,7 +642,7 @@ export function HealthMonitorSurface() {
               </div>
             </div>
 
-            <aside className="rounded-lg border border-[#42433D] bg-[#00BAE2]/[0.035] p-5 text-sm leading-7 text-[#BBBAA6] sm:p-6">
+            <aside className={`${panel} ${hoverPanel} bg-[#00BAE2]/[0.035] p-5 text-sm leading-7 text-[#BBBAA6] sm:p-6`}>
               <span className="text-[#FFFCE1]">Scenario note.</span> This MVP uses a
               scenario-based AI watch cycle. Live external vault feeds are a future integration.
               The protection lifecycle shown here has already been executed on Casper Testnet.

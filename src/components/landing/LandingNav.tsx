@@ -19,10 +19,9 @@ const focusStyles =
 type LandingNavProps = {
   activeId: string | null;
   reducedMotion: boolean;
-  onNavigate: (hash: string) => void;
 };
 
-export function LandingNav({ activeId, reducedMotion, onNavigate }: LandingNavProps) {
+export function LandingNav({ activeId, reducedMotion }: LandingNavProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [hoverId, setHoverId] = useState<string | null>(null);
   const navRowRef = useRef<HTMLDivElement | null>(null);
@@ -99,10 +98,9 @@ export function LandingNav({ activeId, reducedMotion, onNavigate }: LandingNavPr
 
             if (item.href.startsWith("#")) {
               return (
-                <Link
+                <a
                   key={item.href}
                   href={item.href}
-                  scroll={false}
                   ref={(node) => {
                     itemRefs.current[itemId] = node;
                   }}
@@ -128,16 +126,12 @@ export function LandingNav({ activeId, reducedMotion, onNavigate }: LandingNavPr
                       });
                     }
                   }}
-                  onClick={(event) => {
-                    event.preventDefault();
-                    onNavigate(item.href);
-                  }}
                   className={`relative z-10 flex min-h-11 items-center px-3 text-base font-normal transition-colors hover:text-[#ABFF84] ${focusStyles} ${
                     isActive ? "text-[#ABFF84]" : ""
                   }`}
                 >
                   {item.label}
-                </Link>
+                </a>
               );
             }
 
@@ -168,12 +162,6 @@ export function LandingNav({ activeId, reducedMotion, onNavigate }: LandingNavPr
                       duration: 0.2,
                       ease: "power2.out",
                     });
-                  }
-                }}
-                onClick={(event) => {
-                  if (item.href.startsWith("#")) {
-                    event.preventDefault();
-                    onNavigate(item.href);
                   }
                 }}
                 className={`relative z-10 flex min-h-11 items-center px-3 text-base font-normal transition-colors hover:text-[#ABFF84] ${focusStyles} ${
@@ -235,20 +223,15 @@ export function LandingNav({ activeId, reducedMotion, onNavigate }: LandingNavPr
         <div className="mx-auto flex max-w-[1280px] flex-col py-2">
           {navigation.map((item) => (
             item.href.startsWith("#") ? (
-              <Link
+              <a
                 key={item.href}
                 href={item.href}
-                scroll={false}
                 data-nav-load
-                onClick={(event) => {
-                  event.preventDefault();
-                  onNavigate(item.href);
-                  setIsOpen(false);
-                }}
+                onClick={() => setIsOpen(false)}
                 className={`flex min-h-11 items-center border-b border-[#FFFCE1]/10 text-base transition-colors last:border-b-0 hover:text-[#ABFF84] ${focusStyles}`}
               >
                 {item.label}
-              </Link>
+              </a>
             ) : (
               <Link
                 key={item.href}
